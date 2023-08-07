@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   CheckIcon,
   FormControl,
@@ -8,17 +9,47 @@ import {
   InputGroup,
   Pressable,
   Select,
+  Text,
   VStack,
 } from 'native-base';
 import React from 'react';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {generateMemo} from '../utils/memo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default () => {
-  const [formData, setData] = React.useState({});
+  const [formData, setData] = React.useState({
+    name: '',
+    amount: '',
+    memo: ''
+  });
   const [lock, setLock] = React.useState(false);
   const [currency, setCurrency] = React.useState('HBD');
   const [memo, setMemo] = React.useState('');
+  const [errorValidation, setErrorValidation] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    init();
+  }, []);
+
+  const init = async () => {
+    const lastStoreName = await AsyncStorage.getItem("last_store_name");
+    if(lastStoreName){
+      setData({...formData, name: lastStoreName});
+    }
+  };
+
+  const handlerSubmitData = async () => {
+    console.log({formData}); //TODO remove line
+    if(formData.name.trim().length === 0 || formData.amount.trim().length === 0 || formData.memo.trim().length === 0){
+      setErrorValidation("Missing fields!");
+      setTimeout(() => {
+        setErrorValidation(null);
+      }, 4000);
+    }else{
+      await AsyncStorage.setItem("last_store_name", formData.name);
+    }
+  };
 
   return (
     <VStack width="90%" mx="3" maxW="300px" mt={60}>
@@ -52,6 +83,7 @@ export default () => {
           placeholder="myawesomeshop"
           isDisabled={lock}
           onChangeText={value => setData({...formData, name: value})}
+          value={formData.name}
         />
       </FormControl>
       <FormControl isRequired>
@@ -67,7 +99,8 @@ export default () => {
             placeholder="1.000"
             isDisabled={lock}
             width="50%"
-            onChangeText={value => setData({...formData, name: value})}
+            onChangeText={value => setData({...formData, amount: value})}
+            value={formData.amount}
           />
           <Select
             //@ts-ignore
@@ -118,9 +151,17 @@ export default () => {
           }}
         />
       </FormControl>
-      <Button onPress={() => {}} mt="50" colorScheme="cyan">
+      <Button onPress={handlerSubmitData} mt="50" colorScheme="cyan">
         Submit
       </Button>
+      {
+        errorValidation && 
+        <VStack mt={4} alignItems={'center'}>
+          <Text>
+              {errorValidation}
+            </Text>
+        </VStack>
+      }
     </VStack>
   );
 };
