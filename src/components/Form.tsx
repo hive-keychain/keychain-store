@@ -59,6 +59,11 @@ export default () => {
     }
   };
 
+  //TODO here:
+  //  - reset state after coming back from confirmation.
+  //  - clean up
+  //  - test on real device
+
   return (
     <VStack width="90%" mx="3" maxW="300px" mt={60}>
       {!showQR && (
