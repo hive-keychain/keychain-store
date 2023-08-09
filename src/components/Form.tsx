@@ -69,6 +69,8 @@ export default () => {
   //  - NativeBase probably provides these icons and list format
   //  - make a new page for this accessible from a "History" icon on the top right corner. The page just displays a list of the payment requested and theri status, show a checkmark or cross for status. If succeeded, show the username of the payer. If failed, can unroll to show the qr code again.
   //  - comment out the sharing part as may be needed for the fufure. Make ir a separated component unit.
+  //  - important check why//how to solve error:
+  //    -> Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'RNShare' could not be found. Verify that a module by this name is registered in the native binary., js engine: hermes
 
   return (
     <VStack width="90%" mx="3" maxW="300px" mt={60}>

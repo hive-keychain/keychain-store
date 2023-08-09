@@ -2,7 +2,6 @@ import {Operation, TransferOperation} from '@hiveio/dhive';
 import {encodeOp, encodeOps} from 'hive-uri';
 import {Button, HStack, Image, Text, VStack} from 'native-base';
 import React from 'react';
-import Share from 'react-native-share';
 import RNQRGenerator from 'rn-qr-generator';
 import {HiveUtils} from '../utils/hive';
 
@@ -35,7 +34,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     if (ops) {
       value = encodeOps(ops);
     } else if (op) {
-      console.log({op}); //TODO remove line
       value = encodeOp(op);
       setOperation(op as TransferOperation);
     }
@@ -69,7 +67,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   }, [countDown]);
 
   const checkConfirmation = async () => {
-    //check if transfer done to
     const shopAccount = op?.[1].to as TransferOperation;
     const memoToFind = op?.[1].memo as TransferOperation;
     const amountToFind = op?.[1].amount as TransferOperation;
@@ -78,7 +75,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       'get_account_history',
       [shopAccount, -1, 10],
     );
-    // console.log({transactions});
     const lastTransfers: any[] = transactions.map((e: any) => {
       let specificTransaction = null;
       switch (e[1].op[0]) {
@@ -89,7 +85,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       }
       return specificTransaction;
     });
-    // console.log({lastTransfers}); //TODO clean up
     console.log('to check: ', {memoToFind, amountToFind});
     const found = lastTransfers.find(
       (tr: any) => tr && tr.memo === memoToFind && tr.amount === amountToFind,
@@ -98,7 +93,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       setConfirmed(true);
       resetTimer();
       console.log({found, memo: memoToFind});
-      //TODO show previous screen
+      //TODO show next screen
     }
   };
 
@@ -115,22 +110,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     goBack();
   };
 
-  const handleSharingOptions = async () => {
-    //TODO check if it works..
-    const shareOptions = {
-      url: qrCodeImg as string,
-      failOnCancel: false,
-      message: 'Share Invoice',
-      title: 'Share Invoice',
-    };
-    try {
-      const ShareResponse = await Share.open(shareOptions);
-      console.log('Result =>', ShareResponse);
-    } catch (error) {
-      console.log('Error =>', error);
-    }
-  };
-
   return (
     <VStack space={1} alignItems={'center'}>
       {!qrCodeImg && <Text>Generating...</Text>}
@@ -144,7 +123,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
             alt="Alternate Text"
             size={'2xl'}
           />
-          {/* //TODO add options to share this QR as image: whatsapp, savefile, etc. */}
           {!confirmed && operation && (
             <VStack alignItems={'center'}>
               <Text>Waiting confirmation for</Text>
@@ -166,7 +144,11 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
           </Text>
           {/* //Options menu */}
           <HStack space={2}>
-            <Button onPress={handleSharingOptions}>Share Options</Button>
+            {/* <ShareOptionsButton
+              title="Share it"
+              qrCodeImg={qrCodeImg}
+              invoiceMemo={operation?.[1].memo}
+            /> */}
             <Button onPress={handleGoback}>Cancel</Button>
           </HStack>
         </VStack>
