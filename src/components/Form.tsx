@@ -62,7 +62,9 @@ export default () => {
   //TODO here:
   //  - reset state after coming back from confirmation.
   //  - clean up
-  //  - test on real device
+  //  - remove assets folder as not needed anymore
+  //  - Rather than a small message on the QR code page, create a new screen for successful payment
+  //  - verify it scales well on bigger devices(is there a way to do this online?? or using an actual method, research)
 
   return (
     <VStack width="90%" mx="3" maxW="300px" mt={60}>
