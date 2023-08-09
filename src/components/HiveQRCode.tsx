@@ -67,32 +67,16 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   }, [countDown]);
 
   const checkConfirmation = async () => {
-    const shopAccount = op?.[1].to as TransferOperation;
-    const memoToFind = op?.[1].memo as TransferOperation;
-    const amountToFind = op?.[1].amount as TransferOperation;
-    const transactions = await HiveUtils.client.call(
-      'condenser_api',
-      'get_account_history',
-      [shopAccount, -1, 10],
-    );
-    const lastTransfers: any[] = transactions.map((e: any) => {
-      let specificTransaction = null;
-      switch (e[1].op[0]) {
-        case 'transfer': {
-          specificTransaction = e[1].op[1];
-          break;
-        }
-      }
-      return specificTransaction;
-    });
-    console.log('to check: ', {memoToFind, amountToFind});
+    const {to, memo, amount} = (op as TransferOperation)[1];
+    const lastTransfers = await HiveUtils.getLastTransactionsOnUser(to);
+    console.log('to check: ', {memo, amount}); //TODO remove line
     const found = lastTransfers.find(
-      (tr: any) => tr && tr.memo === memoToFind && tr.amount === amountToFind,
+      (tr: any) => tr && tr.memo === memo && tr.amount === amount,
     );
     if (found) {
       setConfirmed(true);
       resetTimer();
-      console.log({found, memo: memoToFind});
+      console.log({found, memo});
       //TODO show next screen
     }
   };
@@ -122,6 +106,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
             }}
             alt="Alternate Text"
             size={'2xl'}
+            resizeMethod="auto"
           />
           {!confirmed && operation && (
             <VStack alignItems={'center'}>
@@ -149,6 +134,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
               qrCodeImg={qrCodeImg}
               invoiceMemo={operation?.[1].memo}
             /> */}
+            {/* //TODO bellow change for a AlertDialog asking if wants to cancel + info that will be lost. */}
             <Button onPress={handleGoback}>Cancel</Button>
           </HStack>
         </VStack>

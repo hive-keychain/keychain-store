@@ -62,13 +62,11 @@ export default () => {
   //TODO here:
   //  - reset state after coming back from confirmation.
   //  - clean up
-  //  - remove assets folder as not needed anymore
   //  - Rather than a small message on the QR code page, create a new screen for successful payment
   //  -  Add a checkuser in hive + present "Hive user not found" or green check, can do it when leaving the focus (onBlur) or storename input.
   //  - verify it scales well on bigger devices(is there a way to do this online?? or using an actual method, research)
   //  - NativeBase probably provides these icons and list format
   //  - make a new page for this accessible from a "History" icon on the top right corner. The page just displays a list of the payment requested and theri status, show a checkmark or cross for status. If succeeded, show the username of the payer. If failed, can unroll to show the qr code again.
-  //  - comment out the sharing part as may be needed for the fufure. Make ir a separated component unit.
   //  - important check why//how to solve error:
   //    -> Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'RNShare' could not be found. Verify that a module by this name is registered in the native binary., js engine: hermes
 
