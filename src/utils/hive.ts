@@ -1,17 +1,21 @@
 import {Client} from '@hiveio/dhive';
 
-const getClient = new Client([
+const DEFAULT_RPC_LIST = [
   'https://api.hive.blog',
   'https://api.hivekings.com',
   'https://anyx.io',
   'https://api.openhive.network',
-]);
+];
+
+let client = new Client(DEFAULT_RPC_LIST);
+
+const getClient = () => client;
 
 const getLastTransactionsOnUser = async (
   username: string,
   limitQueryTo?: number,
 ) => {
-  const transactions = await getClient.call(
+  const transactions = await getClient().call(
     'condenser_api',
     'get_account_history',
     [username, -1, limitQueryTo ?? 10],
@@ -29,4 +33,14 @@ const getLastTransactionsOnUser = async (
   return lastTransfers;
 };
 
-export const HiveUtils = {getClient, getLastTransactionsOnUser};
+const checkIfUserExists = async (username: string) => {
+  const extendedAccount = await getClient().database.getAccounts([username]);
+  if (extendedAccount.length) return true;
+  return false;
+};
+
+export const HiveUtils = {
+  getClient,
+  getLastTransactionsOnUser,
+  checkIfUserExists,
+};

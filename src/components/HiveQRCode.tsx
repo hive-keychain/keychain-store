@@ -4,6 +4,7 @@ import {Button, HStack, Image, Text, VStack} from 'native-base';
 import React from 'react';
 import RNQRGenerator from 'rn-qr-generator';
 import {HiveUtils} from '../utils/hive';
+import AlertBox from './AlertBox';
 
 type Op = {
   ops?: never;
@@ -28,6 +29,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   const [operation, setOperation] = React.useState<TransferOperation | null>(
     null,
   );
+  const [showAlertBox, setShowAlertBox] = React.useState(false);
 
   React.useEffect(() => {
     let value;
@@ -39,13 +41,13 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     }
     RNQRGenerator.generate({
       value: value!,
-      height: 100,
-      width: 100,
+      height: 500,
+      width: 500,
       correctionLevel: 'H',
     })
       .then(response => {
         const {uri, width, height, base64} = response;
-        console.log({imageUri: uri});
+        console.log({imageUri: uri}); //TODO remove
         setQrCodeImg(uri);
         //start timming coountdown
         setTimer(
@@ -76,7 +78,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     if (found) {
       setConfirmed(true);
       resetTimer();
-      console.log({found, memo});
+      console.log({found, memo}); //TODO remove...
       //TODO show next screen
     }
   };
@@ -88,10 +90,11 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     }
   };
 
-  const handleGoback = () => {
+  const handleCancel = () => {
+    //TODO alert native base.
     setOperation(null);
     resetTimer();
-    goBack();
+    goBack(); //reset Form.setShowQR
   };
 
   return (
@@ -135,8 +138,15 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
               invoiceMemo={operation?.[1].memo}
             /> */}
             {/* //TODO bellow change for a AlertDialog asking if wants to cancel + info that will be lost. */}
-            <Button onPress={handleGoback}>Cancel</Button>
+            <Button onPress={() => setShowAlertBox(true)}>Cancel</Button>
           </HStack>
+          <AlertBox
+            show={showAlertBox}
+            alertHeader="Do you want to cancel it?"
+            alertBodyMessage="The invoice will still be visible in the History screen and it will be marked as 'cancelled by owner'. You can restore it later on if you want."
+            onCancelHandler={() => setShowAlertBox(false)}
+            onProceedHandler={() => handleCancel()}
+          />
         </VStack>
       )}
     </VStack>

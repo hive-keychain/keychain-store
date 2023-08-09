@@ -10,7 +10,7 @@ module.exports = {
     getTransformOptions: async () => ({
       transform: {
         experimentalImportSupport: false,
-        inlineRequires: true,
+        inlineRequires: false, //warning this as true will affect network requests. Somehow installing reanimated changes it.
       },
     }),
   },

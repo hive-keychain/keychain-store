@@ -8,20 +8,20 @@ import HistoryInvoices from './src/components/HistoryInvoices';
 
 const Drawer = createDrawerNavigator();
 
+//TODO in drawer menu
+//  - add a footer similar style as the app. Picture and link to vote witness.
+//  - add success payment screen.
+
 function App(): JSX.Element {
   return (
-    <NativeBaseProvider>
-      {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center">
-        <Text>Welcome to your Keychain Powered store</Text>
-        <Form />
-      </Box> */}
-      <NavigationContainer>
+    <NavigationContainer>
+      <NativeBaseProvider>
         <Drawer.Navigator initialRouteName="Home">
           <Drawer.Screen name="Home" component={Form} />
           <Drawer.Screen name="History Invoices" component={HistoryInvoices} />
         </Drawer.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+      </NativeBaseProvider>
+    </NavigationContainer>
   );
 }
 
