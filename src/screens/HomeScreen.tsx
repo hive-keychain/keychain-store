@@ -1,5 +1,6 @@
 import {TransferOperation} from '@hiveio/dhive';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DrawerScreenProps} from '@react-navigation/drawer';
 import {
   Button,
   CheckIcon,
@@ -17,12 +18,15 @@ import {
 import React from 'react';
 import {NativeSyntheticEvent, TextInputFocusEventData} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import HiveQRCode from '../components/HiveQRCode';
+import ScreenLayout from '../components/ScreenLayout';
+import {MainDrawerParamList} from '../types/navigation.types';
 import {HiveUtils} from '../utils/hive';
 import {generateMemo} from '../utils/memo';
-import HiveQRCode from './HiveQRCode';
-import ScreenLayout from './ScreenLayout';
 
-export default () => {
+export type HomeScreenProps = DrawerScreenProps<MainDrawerParamList, 'Home'>;
+
+export default (props: HomeScreenProps) => {
   const [formData, setData] = React.useState({
     name: '',
     amount: '0.001',
@@ -101,7 +105,7 @@ export default () => {
   //    -> Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'RNShare' could not be found. Verify that a module by this name is registered in the native binary., js engine: hermes
 
   return (
-    <ScreenLayout titleLayout="Welcome to your Keychain Powered store">
+    <ScreenLayout>
       <VStack width="90%" mx="3" maxW="300px" mt={60}>
         {!showQR && (
           <>
@@ -230,6 +234,7 @@ export default () => {
               ] as TransferOperation
             }
             goBack={() => handleResetForm()}
+            {...props}
           />
         )}
       </VStack>

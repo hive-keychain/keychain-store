@@ -69,17 +69,27 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   }, [countDown]);
 
   const checkConfirmation = async () => {
-    const {to, memo, amount} = (op as TransferOperation)[1];
+    const {to, memo, amount, from} = (op as TransferOperation)[1];
     const lastTransfers = await HiveUtils.getLastTransactionsOnUser(to);
     console.log('to check: ', {memo, amount}); //TODO remove line
     const found = lastTransfers.find(
       (tr: any) => tr && tr.memo === memo && tr.amount === amount,
     );
     if (found) {
-      setConfirmed(true);
+      setConfirmed(true); //TODO remove as not needed anymore
       resetTimer();
       console.log({found, memo}); //TODO remove...
-      //TODO show next screen
+      //TODO add into asyncstorage which implies making the storage handler.
+      //@ts-ignore
+      props.navigation.navigate('InvoiceSuccess', {
+        confirmedOperation: {
+          from: found.from,
+          to: found.to,
+          amount: found.amount,
+          memo: found.memo,
+        },
+      });
+      //TODO set the state to close this windows, maybe it is better to use replace in the navigator instead of going to
     }
   };
 
