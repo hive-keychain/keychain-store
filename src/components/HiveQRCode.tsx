@@ -3,6 +3,7 @@ import {encodeOp, encodeOps} from 'hive-uri';
 import {Button, HStack, Image, Text, VStack} from 'native-base';
 import React from 'react';
 import RNQRGenerator from 'rn-qr-generator';
+import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
 import AlertBox from './AlertBox';
 
@@ -45,10 +46,19 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       width: 500,
       correctionLevel: 'H',
     })
-      .then(response => {
+      .then(async response => {
         const {uri, width, height, base64} = response;
         console.log({imageUri: uri}); //TODO remove
         setQrCodeImg(uri);
+        //save data into storage
+        await AsyncStorageUtils.addInvoice({
+          from: '', //as not know yet
+          to: op?.[1].to!,
+          amount: op?.[1].amount! as string,
+          memo: op?.[1].memo!,
+          confirmed: false,
+          createdAt: new Date().toISOString(),
+        });
         //start timming coountdown
         setTimer(
           setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
@@ -69,7 +79,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   }, [countDown]);
 
   const checkConfirmation = async () => {
-    const {to, memo, amount, from} = (op as TransferOperation)[1];
+    const {to, memo, amount} = (op as TransferOperation)[1];
     const lastTransfers = await HiveUtils.getLastTransactionsOnUser(to);
     console.log('to check: ', {memo, amount}); //TODO remove line
     const found = lastTransfers.find(
@@ -79,7 +89,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       setConfirmed(true); //TODO remove as not needed anymore
       resetTimer();
       console.log({found, memo}); //TODO remove...
-      //TODO add into asyncstorage which implies making the storage handler.
+      await AsyncStorageUtils.updateInvoice(memo, found.from, true);
       //@ts-ignore
       props.navigation.navigate('InvoiceSuccess', {
         confirmedOperation: {
@@ -89,7 +99,8 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
           memo: found.memo,
         },
       });
-      //TODO set the state to close this windows, maybe it is better to use replace in the navigator instead of going to
+      //TODO does this work?
+      goBack();
     }
   };
 
@@ -148,12 +159,14 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
               invoiceMemo={operation?.[1].memo}
             /> */}
             {/* //TODO bellow change for a AlertDialog asking if wants to cancel + info that will be lost. */}
-            <Button onPress={() => setShowAlertBox(true)}>Cancel</Button>
+            <Button onPress={() => setShowAlertBox(true)}>
+              Cancel Confirmation
+            </Button>
           </HStack>
           <AlertBox
             show={showAlertBox}
             alertHeader="Do you want to cancel it?"
-            alertBodyMessage="The invoice will still be visible in the History screen and it will be marked as 'cancelled by owner'. You can restore it later on if you want."
+            alertBodyMessage="The invoice will still be visible in the History screen as not confirmed. You can restore it later on if you want."
             onCancelHandler={() => setShowAlertBox(false)}
             onProceedHandler={() => handleCancel()}
           />

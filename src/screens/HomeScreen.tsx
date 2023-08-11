@@ -52,6 +52,25 @@ export default (props: HomeScreenProps) => {
     }
   };
 
+  React.useEffect(() => {
+    const reconfirmationParams = props.route.params;
+    if (
+      reconfirmationParams &&
+      reconfirmationParams.toConfirmOperation &&
+      reconfirmationParams.toConfirmOperation.memo
+    ) {
+      const {store, memo, amount} = reconfirmationParams.toConfirmOperation;
+      const currency = amount.split(' ')[1];
+      setCurrency(currency);
+      setData({
+        name: store,
+        memo: memo,
+        amount: amount.split(' ')[0],
+      });
+      setMemo(memo);
+    }
+  }, [props.route.params]);
+
   const handlerSubmitData = async () => {
     if (
       formData.name.trim().length === 0 ||

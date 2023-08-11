@@ -1,5 +1,13 @@
 export type MainDrawerParamList = {
-  Home: undefined;
+  Home:
+    | {
+        toConfirmOperation: {
+          store: string;
+          memo: string;
+          amount: string;
+        };
+      }
+    | undefined;
   History: undefined;
   InvoiceSuccess:
     | {

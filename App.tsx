@@ -3,13 +3,15 @@ import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 import React from 'react';
 import 'react-native-gesture-handler';
-import HistoryInvoices from './src/components/HistoryInvoices';
 import InvoiceSuccess from './src/components/InvoiceSuccess';
 import DrawerContent from './src/drawer/Content';
 import HomeScreen from './src/screens/HomeScreen';
+import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
 import {MainDrawerParamList} from './src/types/navigation.types';
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
+
+//TODO check the TODOs, test in device...submit PR.
 
 function App(): JSX.Element {
   return (
@@ -28,6 +30,7 @@ function App(): JSX.Element {
             component={HistoryInvoices}
             options={{
               title: 'Invoice History',
+              unmountOnBlur: true,
             }}
           />
 
