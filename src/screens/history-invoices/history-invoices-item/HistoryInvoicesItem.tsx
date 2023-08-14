@@ -18,7 +18,9 @@ export default ({item, reloadParent}: Props) => {
 
   //TODO testing
   React.useEffect(() => {
-    if (isExpanded) console.log({item});
+    if (isExpanded) {
+      console.log({item});
+    }
   }, [isExpanded]);
   //end testing
 
@@ -55,30 +57,40 @@ export default ({item, reloadParent}: Props) => {
         />
       </HStack>
       {isExpanded && (
-        <Box w={'100%'} bg={'blueGray.100'} p={2}>
+        <Box w={'100%'} p={2}>
           {item.confirmed && item.from && (
-            <HStack space={3} alignItems={'center'}>
+            <HStack space={3} alignItems={'center'} marginBottom={2}>
               <Avatar username={item.from} />
-              <Link isExternal href={`https://peakd.com/@${item.from}/wallet`}>
+              <Link isExternal href={`https://hiveblocks.com/@${item.from}`}>
                 <HStack space={1} alignItems={'center'}>
-                  <Text>From: {item.from}</Text>
+                  <Text>
+                    <Text style={{fontWeight: 'bold'}}>From:</Text> @{item.from}
+                  </Text>
                   <Icon2 name="link" size={25} />
                 </HStack>
               </Link>
             </HStack>
           )}
-          {item.updatedAt && (
-            <Text>Confirmed at: {moment(item.updatedAt).format('lll')}</Text>
-          )}
-          <Text>Memo: {item.memo}</Text>
+
           {!item.confirmed && (
             <>
-              <Text>Store: {item.to}</Text>
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>Store:</Text> @{item.to}
+              </Text>
             </>
+          )}
+          <Text>
+            <Text style={{fontWeight: 'bold'}}>Memo:</Text> {item.memo}
+          </Text>
+          {item.updatedAt && (
+            <Text>
+              <Text style={{fontWeight: 'bold'}}>Confirmation time:</Text>{' '}
+              {moment(item.updatedAt).format('lll')}
+            </Text>
           )}
           {!item.confirmed && (
             <HStack p={2} space={2}>
-              <Button onPress={gotoHome}>Try confirm again</Button>
+              <Button onPress={gotoHome}>Try again</Button>
               <Button
                 onPress={() => handleDelete(item.memo)}
                 size="sm"

@@ -39,7 +39,7 @@ function App(): JSX.Element {
             name="InvoiceSuccess"
             component={InvoiceSuccess}
             options={{
-              title: 'Invoice Results!',
+              title: 'Payment confirmation',
               drawerItemStyle: {display: 'none'},
             }}
           />

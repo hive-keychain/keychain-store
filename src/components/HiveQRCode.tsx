@@ -25,7 +25,7 @@ type Props = {
 const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   const [qrCodeImg, setQrCodeImg] = React.useState<string | null>(null);
   const [confirmed, setConfirmed] = React.useState(false);
-  const [countDown, setCountdown] = React.useState(10);
+  const [countDown, setCountdown] = React.useState(5);
   const [timer, setTimer] = React.useState<NodeJS.Timer | null>(null);
   const [operation, setOperation] = React.useState<TransferOperation | null>(
     null,
@@ -48,7 +48,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
     })
       .then(async response => {
         const {uri, width, height, base64} = response;
-        console.log({imageUri: uri}); //TODO remove
         setQrCodeImg(uri);
         //save data into storage
         await AsyncStorageUtils.addInvoice({
@@ -67,13 +66,15 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       .catch(error => console.log('Cannot create QR code', error));
 
     return () => {
-      if (timer) clearInterval(timer);
+      if (timer) {
+        clearInterval(timer);
+      }
     };
   }, []);
 
   React.useEffect(() => {
     if (countDown === 0) {
-      setCountdown(10);
+      setCountdown(5);
       checkConfirmation();
     }
   }, [countDown]);
@@ -81,7 +82,6 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   const checkConfirmation = async () => {
     const {to, memo, amount} = (op as TransferOperation)[1];
     const lastTransfers = await HiveUtils.getLastTransactionsOnUser(to);
-    console.log('to check: ', {memo, amount}); //TODO remove line
     const found = lastTransfers.find(
       (tr: any) => tr && tr.memo === memo && tr.amount === amount,
     );
@@ -123,7 +123,9 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       {!qrCodeImg && <Text>Generating...</Text>}
       {qrCodeImg && (
         <VStack space={1} alignItems={'center'}>
-          <Text>Request Transfer QRCode Generated</Text>
+          <Text style={{fontSize: 25, paddingTop: 10, fontWeight: 'bold'}}>
+            Scan this QR Code
+          </Text>
           <Image
             source={{
               uri: qrCodeImg,
@@ -133,34 +135,27 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
             resizeMethod="auto"
           />
           {!confirmed && operation && (
-            <VStack alignItems={'center'}>
-              <Text>Waiting confirmation for</Text>
-              <HStack space={1}>
-                <Text>To: {operation[1].to}</Text>
-                <Text>Amount: {operation[1].amount as string}</Text>
-              </HStack>
-              <Text>Memo: {operation[1].memo}</Text>
-              <Text>Checking again in: {countDown} seconds.</Text>
+            <VStack>
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>To:</Text> @{operation[1].to}
+              </Text>
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>Amount:</Text>{' '}
+                {operation[1].amount as string}
+              </Text>
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>Memo:</Text>{' '}
+                {operation[1].memo}
+              </Text>
+              <Text style={{marginTop: 15, textAlign: 'right'}}>
+                Checking for confirmation in {countDown} seconds
+              </Text>
             </VStack>
           )}
-          {confirmed && (
-            <Text color={'green.700'} bold size={'16'}>
-              Success on Invoice!
-            </Text>
-          )}
-          <Text color={confirmed ? 'green' : 'red'}>
-            Confirmed: {confirmed.toString()}
-          </Text>
-          {/* //Options menu */}
-          <HStack space={2}>
-            {/* <ShareOptionsButton
-              title="Share it"
-              qrCodeImg={qrCodeImg}
-              invoiceMemo={operation?.[1].memo}
-            /> */}
-            {/* //TODO bellow change for a AlertDialog asking if wants to cancel + info that will be lost. */}
+
+          <HStack space={2} style={{marginTop: 30}}>
             <Button onPress={() => setShowAlertBox(true)}>
-              Cancel Confirmation
+              Cancel Invoice
             </Button>
           </HStack>
           <AlertBox
