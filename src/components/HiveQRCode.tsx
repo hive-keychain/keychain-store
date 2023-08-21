@@ -1,11 +1,13 @@
 import {Operation, TransferOperation} from '@hiveio/dhive';
 import {encodeOp, encodeOps} from 'hive-uri';
-import {Button, HStack, Image, Text, VStack} from 'native-base';
+import moment from 'moment';
+import {Button, HStack, Image, Link, Text, VStack} from 'native-base';
 import React from 'react';
 import RNQRGenerator from 'rn-qr-generator';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
 import AlertBox from './AlertBox';
+import Loader from './Loader';
 
 type Op = {
   ops?: never;
@@ -30,6 +32,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
     null,
   );
   const [showAlertBox, setShowAlertBox] = React.useState(false);
+  const [error, setError] = React.useState<any>(null);
 
   const init = React.useCallback(() => {
     let value;
@@ -54,47 +57,19 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           amount: op?.[1].amount! as string,
           memo: op?.[1].memo!,
           confirmed: false,
-          createdAt: new Date().toISOString(),
+          createdAt: moment().unix().toString(),
         });
         setTimer(
           setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
         );
       })
-      .catch(error => console.log('Cannot create QR code', error));
+      .catch((error: any) => {
+        console.log('Cannot create QR code', error);
+        setError(error);
+      });
   }, [op, ops]);
 
   React.useEffect(() => {
-    // let value;
-    // if (ops) {
-    //   value = encodeOps(ops);
-    // } else if (op) {
-    //   value = encodeOp(op);
-    //   setOperation(op as TransferOperation);
-    // }
-    // RNQRGenerator.generate({
-    //   value: value!,
-    //   height: 500,
-    //   width: 500,
-    //   correctionLevel: 'H',
-    // })
-    //   .then(async response => {
-    //     const {uri} = response;
-    //     setQrCodeImg(uri);
-    //     //save data into storage
-    //     await AsyncStorageUtils.addInvoice({
-    //       from: '', //as not know yet
-    //       to: op?.[1].to!,
-    //       amount: op?.[1].amount! as string,
-    //       memo: op?.[1].memo!,
-    //       confirmed: false,
-    //       createdAt: new Date().toISOString(),
-    //     });
-    //     //start timming coountdown
-    //     setTimer(
-    //       setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
-    //     );
-    //   })
-    //   .catch(error => console.log('Cannot create QR code', error));
     init();
     return () => {
       if (timer) {
@@ -122,18 +97,34 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       resetTimer();
       console.log({found, memo}); //TODO remove...
       await AsyncStorageUtils.updateInvoice(memo, found.from, true);
-      //@ts-ignore
-      props.navigation.navigate('InvoiceSuccess', {
-        confirmedOperation: {
-          from: found.from,
-          to: found.to,
-          amount: found.amount,
-          memo: found.memo,
-        },
-      });
-      goBack();
+      const confirmedInvoice = await AsyncStorageUtils.getInvoice(memo);
+      if (confirmedInvoice) {
+        //@ts-ignore
+        props.navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'InvoiceSuccess',
+              params: {
+                confirmedOperation: {
+                  from: confirmedInvoice.from,
+                  to: confirmedInvoice.to,
+                  amount: confirmedInvoice.amount,
+                  memo: confirmedInvoice.memo,
+                  updatedAt: confirmedInvoice.updatedAt,
+                  createdAt: confirmedInvoice.createdAt,
+                },
+              },
+            },
+          ],
+        });
+      } else {
+        setError(
+          new Error('Cannot read Invoice from memory, please contact support!'),
+        );
+      }
     }
-  }, [goBack, op, props, resetTimer]);
+  }, [op, props, resetTimer]);
 
   React.useEffect(() => {
     if (countDown === 0) {
@@ -143,21 +134,17 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   }, [checkConfirmation, countDown]);
 
   const handleCancel = () => {
-    //TODO alert native base.
     setOperation(null);
     resetTimer();
-    goBack(); //reset Form.setShowQR
+    goBack();
   };
 
   return (
-    <VStack
-      alignItems={'center'}
-      alignContent={'center'}
-      justifyItems={'center'}>
-      {!qrCodeImg && <Text>Generating...</Text>}
-      {qrCodeImg && (
+    <VStack>
+      {!qrCodeImg && !confirmed && <Text>Generating...</Text>}
+      {qrCodeImg && !confirmed && operation && (
         <VStack space={1} alignItems={'center'}>
-          <Text fontSize={25} pt={10} fontWeight={'bold'}>
+          <Text fontSize={25} fontWeight={'bold'}>
             Scan this QR Code
           </Text>
           <Image
@@ -168,24 +155,23 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             size={'2xl'}
             resizeMethod="auto"
           />
-          {!confirmed && operation && (
-            <VStack>
-              <Text>
-                <Text fontWeight={'bold'}>To:</Text>@{operation[1].to}
-              </Text>
-              <Text>
-                <Text fontWeight={'bold'}>Amount:</Text>{' '}
-                {operation[1].amount as string}
-              </Text>
-              <Text>
-                <Text fontWeight={'bold'}>Memo:</Text> {operation[1].memo}
-              </Text>
-              <Text mt={15} textAlign={'right'}>
-                Checking for confirmation in {countDown} seconds
-              </Text>
-            </VStack>
-          )}
-
+          <VStack>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>To:</Text>
+              <Text>@{operation[1].to}</Text>
+            </HStack>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>Amount:</Text>
+              <Text>{operation[1].amount as string}</Text>
+            </HStack>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>Memo:</Text>
+              <Text>{operation[1].memo}</Text>
+            </HStack>
+            <Text mt={15} textAlign={'center'}>
+              Checking for confirmation in {countDown} seconds
+            </Text>
+          </VStack>
           <HStack space={2} mt={30}>
             <Button onPress={() => setShowAlertBox(true)}>
               Cancel Invoice
@@ -198,6 +184,15 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             onCancelHandler={() => setShowAlertBox(false)}
             onProceedHandler={() => handleCancel()}
           />
+        </VStack>
+      )}
+      {qrCodeImg && confirmed && !error && <Loader fontSize={'lg'} />}
+      {error && (
+        <VStack space={2} justifyContent={'center'} alignItems={'center'}>
+          <Text textAlign={'center'} color={'red.400'}>
+            {error.message}
+          </Text>
+          <Link onPress={() => handleCancel()}>Go home!</Link>
         </VStack>
       )}
     </VStack>

@@ -1,6 +1,15 @@
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-import {Badge, Box, Button, HStack, Link, Text} from 'native-base';
+import {
+  Badge,
+  Box,
+  Button,
+  Center,
+  HStack,
+  Link,
+  Text,
+  VStack,
+} from 'native-base';
 import React from 'react';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Avatar from '../../../components/Avatar';
@@ -37,7 +46,7 @@ export default ({item, reloadParent}: Props) => {
   return (
     <Box w={'100%'} borderColor="muted.800" borderBottomWidth={1} mb={2} p={5}>
       <HStack justifyContent={'space-between'}>
-        <Text>{moment(item.createdAt).format('L')}</Text>
+        <Text>{moment.unix(Number(item.createdAt)).format('L')}</Text>
         <Text>{item.amount}</Text>
         <Badge colorScheme={item.confirmed ? 'success' : 'warning'}>
           {item.confirmed ? 'Confirmed' : 'Unconfirmed'}
@@ -49,43 +58,52 @@ export default ({item, reloadParent}: Props) => {
         />
       </HStack>
       {isExpanded && (
-        <Box w={'100%'} p={2}>
+        <Box w={'100%'}>
           {item.confirmed && item.from && (
-            <HStack space={3} alignItems={'center'} marginBottom={2}>
-              <Avatar username={item.from} />
-              <Link isExternal href={`https://hiveblocks.com/@${item.from}`}>
-                <HStack space={1} alignItems={'center'}>
-                  <Text>
-                    <Text fontWeight={'bold'}>From:</Text> @{item.from}
-                  </Text>
+            <VStack>
+              <Center>
+                <Avatar size={'lg'} username={item.from} />
+              </Center>
+              <HStack justifyContent={'space-between'}>
+                <Text fontWeight={'bold'}>From:</Text>
+                <Link isExternal href={`https://hiveblocks.com/@${item.from}`}>
+                  <Text>@{item.from}</Text>
                   <Icon2 name="link" size={25} />
-                </HStack>
-              </Link>
-            </HStack>
+                </Link>
+              </HStack>
+            </VStack>
           )}
 
           {!item.confirmed && (
-            <>
-              <Text>
-                <Text fontWeight={'bold'}>Store:</Text> @{item.to}
-              </Text>
-            </>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>Store:</Text>
+              <Text>@{item.to}</Text>
+            </HStack>
           )}
-          <Text>
-            <Text fontWeight={'bold'}>Memo:</Text> {item.memo}
-          </Text>
+          {item.createdAt && (
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>Created:</Text>
+              <Text>{moment.unix(Number(item.createdAt)).format('lll')}</Text>
+            </HStack>
+          )}
+          <HStack justifyContent={'space-between'}>
+            <Text fontWeight={'bold'}>Memo:</Text>
+            <Text>{item.memo}</Text>
+          </HStack>
           {item.updatedAt && (
-            <Text>
-              <Text fontWeight={'bold'}>Confirmation time:</Text>{' '}
-              {moment(item.updatedAt).format('lll')}
-            </Text>
+            <HStack justifyContent={'space-between'}>
+              <Text fontWeight={'bold'}>Confirmed:</Text>
+              <Text>{moment.unix(Number(item.updatedAt)).format('lll')}</Text>
+            </HStack>
           )}
           {!item.confirmed && (
-            <HStack p={2} space={2}>
-              <Button onPress={gotoHome}>Try again</Button>
+            <HStack mt={'3'} space={3} justifyContent={'center'}>
+              <Button w={'90px'} onPress={gotoHome}>
+                Try again
+              </Button>
               <Button
                 onPress={() => handleDelete(item.memo)}
-                size="sm"
+                w={'90px'}
                 colorScheme="secondary">
                 Delete
               </Button>

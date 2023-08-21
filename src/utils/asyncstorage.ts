@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 export interface InvoiceData {
   from: string;
@@ -14,6 +15,21 @@ export enum AsyncStorageKey {
   INVOICE_HISTORY_LIST = 'invoice_history_list',
 }
 
+const getInvoice = async (memo: string): Promise<InvoiceData | undefined> => {
+  try {
+    const invoiceData = await AsyncStorage.getItem(
+      AsyncStorageKey.INVOICE_HISTORY_LIST,
+    );
+    if (invoiceData) {
+      let parsedDataInvoices = JSON.parse(invoiceData) as InvoiceData[];
+      return parsedDataInvoices.find(invoice => invoice.memo === memo);
+    }
+  } catch (error) {
+    console.log({ErrorReadingInvoice: error});
+    return undefined;
+  }
+};
+
 const getAllInvoices = async (orderByDate?: boolean) => {
   try {
     const invoiceData = await AsyncStorage.getItem(
@@ -23,8 +39,10 @@ const getAllInvoices = async (orderByDate?: boolean) => {
     if (invoiceData) {
       let parsedDataInvoices = JSON.parse(invoiceData) as InvoiceData[];
       if (orderByDate) {
-        return parsedDataInvoices.sort(
-          (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt),
+        return parsedDataInvoices.sort((a, b) =>
+          moment
+            .unix(Number(b.createdAt))
+            .diff(moment.unix(Number(a.createdAt))),
         );
       }
       return parsedDataInvoices;
@@ -91,7 +109,7 @@ const updateInvoice = async (
         invoice => invoice.memo === memo,
       );
       invoiceList[foundIndex].confirmed = confirmed;
-      invoiceList[foundIndex].updatedAt = new Date().toISOString();
+      invoiceList[foundIndex].updatedAt = moment().unix().toString();
       invoiceList[foundIndex].from = from;
       console.log({toUpdateInvoice: invoiceList[foundIndex]});
       invoiceListStored = JSON.stringify(invoiceList);
@@ -120,7 +138,6 @@ const deleteInvoice = async (memo: string) => {
       console.log({originalList: invoiceList}); //TODO remove
       const updatedList = invoiceList.filter(invoice => invoice.memo !== memo);
       console.log({updatedList: updatedList}); //TODO remove
-      //TODO check if works
       await AsyncStorage.setItem(
         AsyncStorageKey.INVOICE_HISTORY_LIST,
         JSON.stringify(updatedList),
@@ -136,4 +153,5 @@ export const AsyncStorageUtils = {
   addInvoice,
   updateInvoice,
   deleteInvoice,
+  getInvoice,
 };

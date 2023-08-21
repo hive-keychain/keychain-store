@@ -1,6 +1,15 @@
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {Center, FlatList, HStack, Link, Text} from 'native-base';
+import {
+  ArrowUpIcon,
+  Box,
+  Center,
+  FlatList,
+  HStack,
+  Link,
+  Text,
+} from 'native-base';
 import React from 'react';
+import {NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Loader from '../../components/Loader';
 import ScreenLayout from '../../components/ScreenLayout';
@@ -11,12 +20,13 @@ import HistoryInvoicesItem from './history-invoices-item/HistoryInvoicesItem';
 type Props = DrawerScreenProps<MainDrawerParamList, 'History'>;
 
 export default ({navigation}: Props) => {
-  // console.log({navigation, route}); //TODO remove
   const [loading, setLoading] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [invoiceHistoryList, setInvoiceHistoryList] = React.useState<
     InvoiceData[]
   >([]);
+  const [showScrollToTop, setShowScrollToTop] = React.useState(false);
+  const flatListRef = React.useRef(null);
 
   React.useEffect(() => {
     init();
@@ -25,13 +35,31 @@ export default ({navigation}: Props) => {
   const init = async () => {
     setLoading(true);
     const invoiceList = await AsyncStorageUtils.getAllInvoices(true);
-    console.log({invoiceList});
+    console.log({invoiceList}); //TODO remove line
     setInvoiceHistoryList(invoiceList);
     setLoading(false);
   };
 
+  const handleDragScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (event) {
+      setShowScrollToTop(event.nativeEvent.contentOffset.y > 100);
+    }
+  };
+
+  const gotoStartScroll = () => {
+    if (flatListRef.current) {
+      (flatListRef.current as any).scrollToIndex({
+        animated: true,
+        index: 0,
+      });
+      setShowScrollToTop(false);
+    }
+  };
+
   return loading ? (
-    <Loader />
+    <ScreenLayout>
+      <Loader fontSize={'lg'} />
+    </ScreenLayout>
   ) : (
     <ScreenLayout>
       {invoiceHistoryList.length === 0 ? (
@@ -43,17 +71,30 @@ export default ({navigation}: Props) => {
           <Link onPress={() => navigation.navigate('Home')}>Go Home</Link>
         </Center>
       ) : (
-        <FlatList
-          data={invoiceHistoryList}
-          renderItem={data => (
-            <HistoryInvoicesItem
-              key={data.item.memo}
-              item={data.item}
-              reloadParent={() => setReload(!reload)}
-            />
+        <>
+          <FlatList
+            ref={flatListRef}
+            data={invoiceHistoryList}
+            renderItem={data => (
+              <HistoryInvoicesItem
+                key={data.item.memo}
+                item={data.item}
+                reloadParent={() => setReload(!reload)}
+              />
+            )}
+            width={'90%'}
+            onScrollEndDrag={handleDragScroll}
+          />
+          {showScrollToTop && (
+            <Box position={'absolute'} bottom={'3'} right={'2'}>
+              <ArrowUpIcon
+                size={'5'}
+                background={'white'}
+                onPress={gotoStartScroll}
+              />
+            </Box>
           )}
-          width={'90%'}
-        />
+        </>
       )}
     </ScreenLayout>
   );

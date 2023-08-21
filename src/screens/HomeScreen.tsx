@@ -42,6 +42,12 @@ export default (props: HomeScreenProps) => {
   const [userExist, setUserExist] = React.useState(true);
 
   React.useEffect(() => {
+    //TODO remove testing block
+    // AsyncStorage.removeItem(AsyncStorageKey.INVOICE_HISTORY_LIST, error =>
+    //   console.log({error}),
+    // );
+    //end remove block
+
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -130,7 +136,7 @@ export default (props: HomeScreenProps) => {
 
   return (
     <ScreenLayout>
-      <VStack width="100%" mx="3" maxW="300px" mt={1}>
+      <VStack width="100%" mx="3" maxW="300px">
         {!showQR && (
           <>
             <Heading bold>New Invoice</Heading>

@@ -16,6 +16,8 @@ export type MainDrawerParamList = {
           to: string;
           amount: string;
           memo: string;
+          updatedAt: string;
+          createdAt: string;
         };
       }
     | undefined;
