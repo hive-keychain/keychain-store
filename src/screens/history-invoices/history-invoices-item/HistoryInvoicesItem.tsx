@@ -16,14 +16,6 @@ export default ({item, reloadParent}: Props) => {
 
   const navigation = useNavigation();
 
-  //TODO testing
-  React.useEffect(() => {
-    if (isExpanded) {
-      console.log({item});
-    }
-  }, [isExpanded]);
-  //end testing
-
   const gotoHome = () => {
     //@ts-ignore //TODO add props so it gets the types
     navigation.navigate('Home', {
@@ -64,7 +56,7 @@ export default ({item, reloadParent}: Props) => {
               <Link isExternal href={`https://hiveblocks.com/@${item.from}`}>
                 <HStack space={1} alignItems={'center'}>
                   <Text>
-                    <Text style={{fontWeight: 'bold'}}>From:</Text> @{item.from}
+                    <Text fontWeight={'bold'}>From:</Text> @{item.from}
                   </Text>
                   <Icon2 name="link" size={25} />
                 </HStack>
@@ -75,16 +67,16 @@ export default ({item, reloadParent}: Props) => {
           {!item.confirmed && (
             <>
               <Text>
-                <Text style={{fontWeight: 'bold'}}>Store:</Text> @{item.to}
+                <Text fontWeight={'bold'}>Store:</Text> @{item.to}
               </Text>
             </>
           )}
           <Text>
-            <Text style={{fontWeight: 'bold'}}>Memo:</Text> {item.memo}
+            <Text fontWeight={'bold'}>Memo:</Text> {item.memo}
           </Text>
           {item.updatedAt && (
             <Text>
-              <Text style={{fontWeight: 'bold'}}>Confirmation time:</Text>{' '}
+              <Text fontWeight={'bold'}>Confirmation time:</Text>{' '}
               {moment(item.updatedAt).format('lll')}
             </Text>
           )}

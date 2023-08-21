@@ -43,6 +43,7 @@ export default (props: HomeScreenProps) => {
 
   React.useEffect(() => {
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const init = async () => {
@@ -59,15 +60,19 @@ export default (props: HomeScreenProps) => {
       reconfirmationParams.toConfirmOperation &&
       reconfirmationParams.toConfirmOperation.memo
     ) {
-      const {store, memo, amount} = reconfirmationParams.toConfirmOperation;
-      const currency = amount.split(' ')[1];
-      setCurrency(currency);
+      const {
+        store: reconfirmationStore,
+        memo: reconfirmationMemo,
+        amount: reconfirmationAmount,
+      } = reconfirmationParams.toConfirmOperation;
+      const reconfirmationCurrency = reconfirmationAmount.split(' ')[1];
+      setCurrency(reconfirmationCurrency);
       setData({
-        name: store,
-        memo: memo,
-        amount: amount.split(' ')[0],
+        name: reconfirmationStore,
+        memo: reconfirmationMemo,
+        amount: reconfirmationAmount.split(' ')[0],
       });
-      setMemo(memo);
+      setMemo(reconfirmationMemo);
     }
   }, [props.route.params]);
 
@@ -89,7 +94,7 @@ export default (props: HomeScreenProps) => {
   };
 
   const handleOnBlurInput = async (
-    e: NativeSyntheticEvent<TextInputFocusEventData>,
+    _e: NativeSyntheticEvent<TextInputFocusEventData>,
   ) => {
     if (formData.name) {
       setUserExist(await HiveUtils.checkIfUserExists(formData.name));
@@ -125,7 +130,7 @@ export default (props: HomeScreenProps) => {
 
   return (
     <ScreenLayout>
-      <VStack width="90%" mx="3" maxW="300px" mt={60}>
+      <VStack width="100%" mx="3" maxW="300px" mt={1}>
         {!showQR && (
           <>
             <Heading bold>New Invoice</Heading>

@@ -1,4 +1,5 @@
 import {HStack, Heading, Spinner} from 'native-base';
+import React from 'react';
 
 interface Props {
   accessibilityLabel?: string;

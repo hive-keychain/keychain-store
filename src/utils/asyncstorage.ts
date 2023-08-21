@@ -22,10 +22,11 @@ const getAllInvoices = async (orderByDate?: boolean) => {
     console.log({invoiceData}); //TODO remove
     if (invoiceData) {
       let parsedDataInvoices = JSON.parse(invoiceData) as InvoiceData[];
-      if (orderByDate)
+      if (orderByDate) {
         return parsedDataInvoices.sort(
           (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt),
         );
+      }
       return parsedDataInvoices;
     }
     return [];
@@ -51,15 +52,14 @@ const addInvoice = async (invoice: InvoiceData) => {
     };
     let invoiceList: InvoiceData[] = [];
     if (!invoiceListStored) {
-      //add new invoice.
       invoiceList.push(item);
     } else {
-      //handling memo as unique id
       invoiceList = JSON.parse(invoiceListStored);
-      if (!invoiceList.find(invoice => invoice.memo === memo)) {
-        //not found so add it
+      if (!invoiceList.find(invoiceStored => invoiceStored.memo === memo)) {
         invoiceList.push(item);
-      } else item = null;
+      } else {
+        item = null;
+      }
     }
     if (item) {
       console.log('About to add: ', {item}); //TODO remove
@@ -99,10 +99,11 @@ const updateInvoice = async (
         AsyncStorageKey.INVOICE_HISTORY_LIST,
         invoiceListStored,
       );
-    } else
+    } else {
       throw new Error(
         'Cannot update records as store is empty in Asyncstorage',
       );
+    }
   } catch (error) {
     console.log({ErrorUpdateInvoice: error});
   }

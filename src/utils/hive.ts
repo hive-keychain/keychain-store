@@ -35,7 +35,9 @@ const getLastTransactionsOnUser = async (
 
 const checkIfUserExists = async (username: string) => {
   const extendedAccount = await getClient().database.getAccounts([username]);
-  if (extendedAccount.length) return true;
+  if (extendedAccount.length) {
+    return true;
+  }
   return false;
 };
 

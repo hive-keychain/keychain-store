@@ -19,10 +19,9 @@ type Ops = {
 
 type Props = {
   goBack: () => void;
-  withLogo?: boolean;
 } & (Op | Ops);
 
-const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
+const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   const [qrCodeImg, setQrCodeImg] = React.useState<string | null>(null);
   const [confirmed, setConfirmed] = React.useState(false);
   const [countDown, setCountdown] = React.useState(5);
@@ -32,7 +31,7 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   );
   const [showAlertBox, setShowAlertBox] = React.useState(false);
 
-  React.useEffect(() => {
+  const init = React.useCallback(() => {
     let value;
     if (ops) {
       value = encodeOps(ops);
@@ -47,46 +46,79 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
       correctionLevel: 'H',
     })
       .then(async response => {
-        const {uri, width, height, base64} = response;
+        const {uri} = response;
         setQrCodeImg(uri);
-        //save data into storage
         await AsyncStorageUtils.addInvoice({
-          from: '', //as not know yet
+          from: '',
           to: op?.[1].to!,
           amount: op?.[1].amount! as string,
           memo: op?.[1].memo!,
           confirmed: false,
           createdAt: new Date().toISOString(),
         });
-        //start timming coountdown
         setTimer(
           setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
         );
       })
       .catch(error => console.log('Cannot create QR code', error));
+  }, [op, ops]);
 
+  React.useEffect(() => {
+    // let value;
+    // if (ops) {
+    //   value = encodeOps(ops);
+    // } else if (op) {
+    //   value = encodeOp(op);
+    //   setOperation(op as TransferOperation);
+    // }
+    // RNQRGenerator.generate({
+    //   value: value!,
+    //   height: 500,
+    //   width: 500,
+    //   correctionLevel: 'H',
+    // })
+    //   .then(async response => {
+    //     const {uri} = response;
+    //     setQrCodeImg(uri);
+    //     //save data into storage
+    //     await AsyncStorageUtils.addInvoice({
+    //       from: '', //as not know yet
+    //       to: op?.[1].to!,
+    //       amount: op?.[1].amount! as string,
+    //       memo: op?.[1].memo!,
+    //       confirmed: false,
+    //       createdAt: new Date().toISOString(),
+    //     });
+    //     //start timming coountdown
+    //     setTimer(
+    //       setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
+    //     );
+    //   })
+    //   .catch(error => console.log('Cannot create QR code', error));
+    init();
     return () => {
       if (timer) {
         clearInterval(timer);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  React.useEffect(() => {
-    if (countDown === 0) {
-      setCountdown(5);
-      checkConfirmation();
+  const resetTimer = React.useCallback(() => {
+    if (timer) {
+      clearInterval(timer);
+      setTimer(null);
     }
-  }, [countDown]);
+  }, [setTimer, timer]);
 
-  const checkConfirmation = async () => {
+  const checkConfirmation = React.useCallback(async () => {
     const {to, memo, amount} = (op as TransferOperation)[1];
     const lastTransfers = await HiveUtils.getLastTransactionsOnUser(to);
     const found = lastTransfers.find(
       (tr: any) => tr && tr.memo === memo && tr.amount === amount,
     );
     if (found) {
-      setConfirmed(true); //TODO remove as not needed anymore
+      setConfirmed(true);
       resetTimer();
       console.log({found, memo}); //TODO remove...
       await AsyncStorageUtils.updateInvoice(memo, found.from, true);
@@ -99,17 +131,16 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
           memo: found.memo,
         },
       });
-      //TODO does this work?
       goBack();
     }
-  };
+  }, [goBack, op, props, resetTimer]);
 
-  const resetTimer = () => {
-    if (timer) {
-      clearInterval(timer);
-      setTimer(null);
+  React.useEffect(() => {
+    if (countDown === 0) {
+      setCountdown(5);
+      checkConfirmation();
     }
-  };
+  }, [checkConfirmation, countDown]);
 
   const handleCancel = () => {
     //TODO alert native base.
@@ -119,11 +150,14 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
   };
 
   return (
-    <VStack space={1} alignItems={'center'}>
+    <VStack
+      alignItems={'center'}
+      alignContent={'center'}
+      justifyItems={'center'}>
       {!qrCodeImg && <Text>Generating...</Text>}
       {qrCodeImg && (
         <VStack space={1} alignItems={'center'}>
-          <Text style={{fontSize: 25, paddingTop: 10, fontWeight: 'bold'}}>
+          <Text fontSize={25} pt={10} fontWeight={'bold'}>
             Scan this QR Code
           </Text>
           <Image
@@ -137,23 +171,22 @@ const HiveQRCode = ({ops, op, withLogo = false, goBack, ...props}: Props) => {
           {!confirmed && operation && (
             <VStack>
               <Text>
-                <Text style={{fontWeight: 'bold'}}>To:</Text> @{operation[1].to}
+                <Text fontWeight={'bold'}>To:</Text>@{operation[1].to}
               </Text>
               <Text>
-                <Text style={{fontWeight: 'bold'}}>Amount:</Text>{' '}
+                <Text fontWeight={'bold'}>Amount:</Text>{' '}
                 {operation[1].amount as string}
               </Text>
               <Text>
-                <Text style={{fontWeight: 'bold'}}>Memo:</Text>{' '}
-                {operation[1].memo}
+                <Text fontWeight={'bold'}>Memo:</Text> {operation[1].memo}
               </Text>
-              <Text style={{marginTop: 15, textAlign: 'right'}}>
+              <Text mt={15} textAlign={'right'}>
                 Checking for confirmation in {countDown} seconds
               </Text>
             </VStack>
           )}
 
-          <HStack space={2} style={{marginTop: 30}}>
+          <HStack space={2} mt={30}>
             <Button onPress={() => setShowAlertBox(true)}>
               Cancel Invoice
             </Button>

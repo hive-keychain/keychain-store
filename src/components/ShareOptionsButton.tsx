@@ -1,4 +1,5 @@
 import {Button} from 'native-base';
+import React from 'react';
 import Share from 'react-native-share';
 
 interface Props {

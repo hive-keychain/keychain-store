@@ -10,7 +10,7 @@ import HistoryInvoicesItem from './history-invoices-item/HistoryInvoicesItem';
 
 type Props = DrawerScreenProps<MainDrawerParamList, 'History'>;
 
-export default ({navigation, route}: Props) => {
+export default ({navigation}: Props) => {
   // console.log({navigation, route}); //TODO remove
   const [loading, setLoading] = React.useState(false);
   const [reload, setReload] = React.useState(false);
@@ -52,9 +52,7 @@ export default ({navigation, route}: Props) => {
               reloadParent={() => setReload(!reload)}
             />
           )}
-          style={{
-            width: '90%',
-          }}
+          width={'90%'}
         />
       )}
     </ScreenLayout>
