@@ -56,6 +56,7 @@ export default (props: HomeScreenProps) => {
     const lastStoreName = await AsyncStorage.getItem('last_store_name');
     if (lastStoreName) {
       setData({...formData, name: lastStoreName});
+      setLock(true);
     }
   };
 
@@ -117,23 +118,6 @@ export default (props: HomeScreenProps) => {
     setSetShowQR(false);
   };
 
-  //TODO here:
-  //  - clean up
-  //  - Rather than a small message on the QR code page, create a new screen for successful payment
-  //  - verify it scales well on bigger devices(is there a way to do this online?? or using an actual method, research)
-  //  - NativeBase probably provides these icons and list format
-  //  - make a new page for this accessible from a "History" icon on the top right corner. The page just displays a list of the payment requested and theri status, show a checkmark or cross for status. If succeeded, show the username of the payer. If failed, can unroll to show the qr code again.
-  //    - analyze this part, it needs an asynstorage handler:
-  // -> async storage handler.
-  //    -> structure the op + data for each record.
-  //    -> add op + status. how to check??
-  //      -> besides op + status add: hiveUri, as this way can be re-generated.
-  //    -> re-do QR if needed.
-  //    -> delete.
-  //  -> maybe also adding a way to import/export data?
-  //  - important check why//how to solve error:
-  //    -> Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'RNShare' could not be found. Verify that a module by this name is registered in the native binary., js engine: hermes
-
   return (
     <ScreenLayout>
       <VStack width="100%" mx="3" maxW="300px">
@@ -171,6 +155,7 @@ export default (props: HomeScreenProps) => {
                 onChangeText={value => setData({...formData, name: value})}
                 value={formData.name}
                 onBlur={handleOnBlurInput}
+                isReadOnly={lock}
               />
 
               <FormControl.ErrorMessage
@@ -209,7 +194,7 @@ export default (props: HomeScreenProps) => {
                 </Select>
               </InputGroup>
             </FormControl>
-            <FormControl>
+            <FormControl isRequired>
               <FormControl.Label
                 _text={{
                   bold: true,
