@@ -1,3 +1,4 @@
+import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import {
@@ -13,6 +14,7 @@ import {
 import React from 'react';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Avatar from '../../../components/Avatar';
+import {MainDrawerParamList} from '../../../types/navigation.types';
 import {AsyncStorageUtils, InvoiceData} from '../../../utils/asyncstorage';
 
 interface Props {
@@ -23,10 +25,9 @@ interface Props {
 export default ({item, reloadParent}: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<DrawerNavigationProp<MainDrawerParamList>>();
 
   const gotoHome = () => {
-    //@ts-ignore //TODO add props so it gets the types
     navigation.navigate('Home', {
       toConfirmOperation: {
         store: item.to,

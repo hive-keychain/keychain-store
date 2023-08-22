@@ -11,7 +11,10 @@ import {MainDrawerParamList} from './src/types/navigation.types';
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
 
-//TODO check the TODOs, test in device...submit PR.
+//TODO
+//  - find an effective way to test this app in several android devices. research internet.
+//  - find if possible to test IOs???
+//   - check the TODOs, test in device...submit PR.
 
 function App(): JSX.Element {
   return (

@@ -35,7 +35,6 @@ const getAllInvoices = async (orderByDate?: boolean) => {
     const invoiceData = await AsyncStorage.getItem(
       AsyncStorageKey.INVOICE_HISTORY_LIST,
     );
-    console.log({invoiceData}); //TODO remove
     if (invoiceData) {
       let parsedDataInvoices = JSON.parse(invoiceData) as InvoiceData[];
       if (orderByDate) {
@@ -80,7 +79,6 @@ const addInvoice = async (invoice: InvoiceData) => {
       }
     }
     if (item) {
-      console.log('About to add: ', {item}); //TODO remove
       await AsyncStorage.setItem(
         AsyncStorageKey.INVOICE_HISTORY_LIST,
         JSON.stringify(invoiceList),
@@ -111,7 +109,6 @@ const updateInvoice = async (
       invoiceList[foundIndex].confirmed = confirmed;
       invoiceList[foundIndex].updatedAt = moment().unix().toString();
       invoiceList[foundIndex].from = from;
-      console.log({toUpdateInvoice: invoiceList[foundIndex]});
       invoiceListStored = JSON.stringify(invoiceList);
       await AsyncStorage.setItem(
         AsyncStorageKey.INVOICE_HISTORY_LIST,
@@ -135,9 +132,7 @@ const deleteInvoice = async (memo: string) => {
     let invoiceList: InvoiceData[] = [];
     if (invoiceListStored) {
       invoiceList = JSON.parse(invoiceListStored);
-      console.log({originalList: invoiceList}); //TODO remove
       const updatedList = invoiceList.filter(invoice => invoice.memo !== memo);
-      console.log({updatedList: updatedList}); //TODO remove
       await AsyncStorage.setItem(
         AsyncStorageKey.INVOICE_HISTORY_LIST,
         JSON.stringify(updatedList),

@@ -41,6 +41,11 @@ export default (props: HomeScreenProps) => {
   const [showQR, setSetShowQR] = React.useState(false);
   const [userExist, setUserExist] = React.useState(true);
 
+  const handleResetForm = () => {
+    handleSetMemo('');
+    setSetShowQR(false);
+  };
+
   React.useEffect(() => {
     //TODO remove testing block
     // AsyncStorage.removeItem(AsyncStorageKey.INVOICE_HISTORY_LIST, error =>
@@ -67,6 +72,9 @@ export default (props: HomeScreenProps) => {
       reconfirmationParams.toConfirmOperation &&
       reconfirmationParams.toConfirmOperation.memo
     ) {
+      if (showQR) {
+        setSetShowQR(false);
+      }
       const {
         store: reconfirmationStore,
         memo: reconfirmationMemo,
@@ -80,7 +88,13 @@ export default (props: HomeScreenProps) => {
         amount: reconfirmationAmount.split(' ')[0],
       });
       setMemo(reconfirmationMemo);
+      console.log(
+        'Here you can cehck if there is an actual invoice & cancel it!',
+        {showQR},
+      );
+      handlerSubmitData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.route.params]);
 
   const handlerSubmitData = async () => {
@@ -111,11 +125,6 @@ export default (props: HomeScreenProps) => {
   const handleSetMemo = (value: string) => {
     setData({...formData, memo: value});
     setMemo(value);
-  };
-
-  const handleResetForm = () => {
-    handleSetMemo('');
-    setSetShowQR(false);
   };
 
   return (
