@@ -7,14 +7,14 @@ interface Props {
   qrCodeImg: string;
   invoiceMemo?: string;
 }
-//TODO when need to implement Share Options, uncomment code in HiveQrCode.tsx
+//TODO use share options when needed!
 export default ({title, qrCodeImg, invoiceMemo}: Props) => {
   const handleSharingOptions = async () => {
     const shareOptions = {
       title: `Share Invoice ${invoiceMemo}`,
       url: qrCodeImg as string,
       failOnCancel: false,
-      //   message: 'Share Invoice',
+      //message: 'Share Invoice',
     };
     try {
       const ShareResponse = await Share.open(shareOptions);

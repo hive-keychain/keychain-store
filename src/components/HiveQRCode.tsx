@@ -104,7 +104,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
     if (found) {
       setConfirmed(true);
       resetTimer();
-      console.log({found, memo}); //TODO remove...
       await AsyncStorageUtils.updateInvoice(memo, found.from, true);
       const confirmedInvoice = await AsyncStorageUtils.getInvoice(memo);
       if (confirmedInvoice) {
