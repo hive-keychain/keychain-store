@@ -9,6 +9,7 @@ export type MainDrawerParamList = {
       }
     | undefined;
   History: undefined;
+  Settings: undefined;
   InvoiceSuccess:
     | {
         confirmedOperation: {

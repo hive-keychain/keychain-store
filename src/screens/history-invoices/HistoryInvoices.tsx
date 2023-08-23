@@ -41,8 +41,10 @@ export default ({navigation}: Props) => {
   React.useEffect(() => {
     if (searchQuery.trim().length > 0 && invoiceHistoryList.length > 0) {
       setFilteredInvoiceHistoryList(
-        invoiceHistoryList.filter(invoice =>
-          invoice.memo.toLowerCase().includes(searchQuery.toLowerCase()),
+        invoiceHistoryList.filter(
+          invoice =>
+            invoice.memo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            invoice.from.toLowerCase().includes(searchQuery.toLowerCase()),
         ),
       );
     } else {

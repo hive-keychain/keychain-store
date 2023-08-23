@@ -6,6 +6,7 @@ import 'react-native-gesture-handler';
 import InvoiceSuccess from './src/components/InvoiceSuccess';
 import DrawerContent from './src/drawer/Content';
 import HomeScreen from './src/screens/HomeScreen';
+import Settings from './src/screens/Settings';
 import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
 import {MainDrawerParamList} from './src/types/navigation.types';
 
@@ -33,6 +34,14 @@ function App(): JSX.Element {
             component={HistoryInvoices}
             options={{
               title: 'Invoice History',
+              unmountOnBlur: true,
+            }}
+          />
+          <Drawer.Screen
+            name="Settings"
+            component={Settings}
+            options={{
+              title: 'Store Settings',
               unmountOnBlur: true,
             }}
           />

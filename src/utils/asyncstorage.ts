@@ -13,6 +13,7 @@ export interface InvoiceData {
 
 export enum AsyncStorageKey {
   INVOICE_HISTORY_LIST = 'invoice_history_list',
+  LAST_STORE_NAME = 'last_store_name',
 }
 
 const getInvoice = async (memo: string): Promise<InvoiceData | undefined> => {

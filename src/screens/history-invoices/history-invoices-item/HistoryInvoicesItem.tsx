@@ -67,7 +67,10 @@ export default ({item, reloadParent}: Props) => {
               </Center>
               <HStack justifyContent={'space-between'}>
                 <Text fontWeight={'bold'}>From:</Text>
-                <Link isExternal href={`https://hiveblocks.com/@${item.from}`}>
+                <Link
+                  isExternal
+                  href={`https://hiveblocks.com/@${item.from}`}
+                  alignItems={'center'}>
                   <Text>@{item.from}</Text>
                   <Icon2 name="link" size={25} />
                 </Link>
@@ -75,12 +78,11 @@ export default ({item, reloadParent}: Props) => {
             </VStack>
           )}
 
-          {!item.confirmed && (
-            <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Store:</Text>
-              <Text>@{item.to}</Text>
-            </HStack>
-          )}
+          <HStack justifyContent={'space-between'}>
+            <Text fontWeight={'bold'}>Store:</Text>
+            <Text>@{item.to}</Text>
+          </HStack>
+
           {item.createdAt && (
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>Created:</Text>

@@ -21,6 +21,7 @@ import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import HiveQRCode from '../components/HiveQRCode';
 import ScreenLayout from '../components/ScreenLayout';
 import {MainDrawerParamList} from '../types/navigation.types';
+import {AsyncStorageKey} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
 import {generateMemo} from '../utils/memo';
 
@@ -47,18 +48,14 @@ export default (props: HomeScreenProps) => {
   };
 
   React.useEffect(() => {
-    //TODO remove testing block
-    // AsyncStorage.removeItem(AsyncStorageKey.INVOICE_HISTORY_LIST, error =>
-    //   console.log({error}),
-    // );
-    //end remove block
-
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const init = async () => {
-    const lastStoreName = await AsyncStorage.getItem('last_store_name');
+    const lastStoreName = await AsyncStorage.getItem(
+      AsyncStorageKey.LAST_STORE_NAME,
+    );
     if (lastStoreName) {
       setData({...formData, name: lastStoreName});
       setLock(true);
@@ -88,10 +85,6 @@ export default (props: HomeScreenProps) => {
         amount: reconfirmationAmount.split(' ')[0],
       });
       setMemo(reconfirmationMemo);
-      console.log(
-        'Here you can cehck if there is an actual invoice & cancel it!',
-        {showQR},
-      );
       handlerSubmitData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,7 +102,10 @@ export default (props: HomeScreenProps) => {
         setErrorValidation(null);
       }, 3000);
     } else {
-      await AsyncStorage.setItem('last_store_name', formData.name);
+      await AsyncStorage.setItem(
+        AsyncStorageKey.LAST_STORE_NAME,
+        formData.name,
+      );
       setSetShowQR(true);
     }
   };
