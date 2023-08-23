@@ -12,7 +12,9 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import RNQRGenerator from 'rn-qr-generator';
+import {HomeScreenProps} from '../screens/HomeScreen';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
 import AlertBox from './AlertBox';
@@ -30,9 +32,11 @@ type Ops = {
 
 type Props = {
   goBack: () => void;
-} & (Op | Ops);
+} & (Op | Ops) &
+  HomeScreenProps;
 
 const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
+  const {t} = useTranslation();
   const [qrCodeImg, setQrCodeImg] = React.useState<string | null>(null);
   const [confirmed, setConfirmed] = React.useState(false);
   const [countDown, setCountdown] = React.useState(5);
@@ -72,11 +76,11 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           setInterval(() => setCountdown(prevCount => prevCount - 1), 1000),
         );
       })
-      .catch((error: any) => {
-        console.log('Cannot create QR code', error);
-        setError(error);
+      .catch((errorQR: any) => {
+        console.log(t('error:cannot_create_qr_code'), errorQR);
+        setError(errorQR);
       });
-  }, [op, ops]);
+  }, [op, ops, t]);
 
   React.useEffect(() => {
     init();
@@ -111,14 +115,13 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           render: () => {
             return (
               <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-                Invoice confirmed. received {confirmedInvoice.amount}
+                {t('common:toast_confirmed_invoice')} {confirmedInvoice.amount}
               </Box>
             );
           },
           duration: 5000,
           placement: 'top',
         });
-        //@ts-ignore
         props.navigation.reset({
           index: 0,
           routes: [
@@ -138,12 +141,10 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           ],
         });
       } else {
-        setError(
-          new Error('Cannot read Invoice from memory, please contact support!'),
-        );
+        setError(new Error(t('error:read_invoice_memory')));
       }
     }
-  }, [op, props, resetTimer]);
+  }, [op, props.navigation, resetTimer, t]);
 
   React.useEffect(() => {
     if (countDown === 0) {
@@ -160,11 +161,11 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
 
   return (
     <VStack>
-      {!qrCodeImg && !confirmed && <Text>Generating...</Text>}
+      {!qrCodeImg && !confirmed && <Text>{t('common:generating')}</Text>}
       {qrCodeImg && !confirmed && operation && (
         <VStack space={1} alignItems={'center'}>
           <Text fontSize={25} fontWeight={'bold'}>
-            Scan this QR Code
+            {t('common:scan_qr_code')}
           </Text>
           <Image
             source={{
@@ -176,32 +177,36 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           />
           <VStack>
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>To:</Text>
+              <Text fontWeight={'bold'}>{t('common:to')}:</Text>
               <Text>@{operation[1].to}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Amount:</Text>
+              <Text fontWeight={'bold'}>{t('common:amount')}:</Text>
               <Text>{operation[1].amount as string}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Memo:</Text>
+              <Text fontWeight={'bold'}>{t('common:memo')}:</Text>
               <Text>{operation[1].memo}</Text>
             </HStack>
             <Text mt={15} textAlign={'center'}>
-              Checking for confirmation in {countDown} seconds
+              {t('common:checking_confirmation', {
+                countDown: countDown.toString(),
+              })}
             </Text>
           </VStack>
           <HStack space={2} mt={30}>
             <Button onPress={() => setShowAlertBox(true)}>
-              Cancel Invoice
+              {t('common:cancel_invoice')}
             </Button>
           </HStack>
           <AlertBox
             show={showAlertBox}
-            alertHeader="Do you want to cancel it?"
-            alertBodyMessage="The invoice will still be visible in the History screen as not confirmed. You can restore it later on if you want."
+            alertHeader={t('common:alert_cancel_title')}
+            alertBodyMessage={t('common:alert_cancel_body')}
             onCancelHandler={() => setShowAlertBox(false)}
             onProceedHandler={() => handleCancel()}
+            buttonProceedTitle={t('common:proceed')}
+            buttonCancelTitle={t('common:cancel')}
           />
         </VStack>
       )}
@@ -211,7 +216,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           <Text textAlign={'center'} color={'red.400'}>
             {error.message}
           </Text>
-          <Link onPress={() => handleCancel()}>Go home!</Link>
+          <Link onPress={() => handleCancel()}>{t('common:link_go_home')}</Link>
         </VStack>
       )}
     </VStack>

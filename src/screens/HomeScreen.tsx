@@ -16,6 +16,7 @@ import {
   WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {NativeSyntheticEvent, TextInputFocusEventData} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import HiveQRCode from '../components/HiveQRCode';
@@ -28,6 +29,7 @@ import {generateMemo} from '../utils/memo';
 export type HomeScreenProps = DrawerScreenProps<MainDrawerParamList, 'Home'>;
 
 export default (props: HomeScreenProps) => {
+  const {t} = useTranslation();
   const [formData, setData] = React.useState({
     name: '',
     amount: '0.001',
@@ -97,7 +99,7 @@ export default (props: HomeScreenProps) => {
       memo.trim().length === 0 ||
       !userExist
     ) {
-      setErrorValidation('Missing fields or not found account!');
+      setErrorValidation(t('error:missing_fields'));
       setTimeout(() => {
         setErrorValidation(null);
       }, 3000);
@@ -128,13 +130,13 @@ export default (props: HomeScreenProps) => {
       <VStack width="100%" mx="3" maxW="300px">
         {!showQR && (
           <>
-            <Heading bold>New Invoice</Heading>
+            <Heading bold>{t('common:new_invoice')}</Heading>
             <FormControl isRequired isInvalid={!userExist}>
               <FormControl.Label
                 _text={{
                   bold: true,
                 }}>
-                Shop Username
+                {t('common:shop_username')}
               </FormControl.Label>
               <Input
                 InputLeftElement={
@@ -155,7 +157,7 @@ export default (props: HomeScreenProps) => {
                     />
                   </Pressable>
                 }
-                placeholder="myawesomeshop"
+                placeholder={t('common:my_awesome_shop_placeholder')}
                 isDisabled={lock}
                 onChangeText={value => setData({...formData, name: value})}
                 value={formData.name}
@@ -165,7 +167,7 @@ export default (props: HomeScreenProps) => {
 
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}>
-                Username not found in Hive!
+                {t('error:missing_hive_user')}
               </FormControl.ErrorMessage>
             </FormControl>
             <FormControl isRequired>
@@ -173,12 +175,12 @@ export default (props: HomeScreenProps) => {
                 _text={{
                   bold: true,
                 }}>
-                Amount
+                {t('common:amount')}
               </FormControl.Label>
               <InputGroup>
                 <Input
                   keyboardType="number-pad"
-                  placeholder="1.000"
+                  placeholder={t('common:amount_placeholder')}
                   isDisabled={lock}
                   width="50%"
                   onChangeText={value => setData({...formData, amount: value})}
@@ -204,7 +206,7 @@ export default (props: HomeScreenProps) => {
                 _text={{
                   bold: true,
                 }}>
-                Memo
+                {t('common:memo')}
               </FormControl.Label>
               <Input
                 InputLeftElement={
@@ -225,13 +227,13 @@ export default (props: HomeScreenProps) => {
                     />
                   </Pressable>
                 }
-                placeholder="myawesomeshop"
+                placeholder={t('common:my_awesome_shop_placeholder')}
                 value={memo}
                 onChangeText={value => handleSetMemo(value)}
               />
             </FormControl>
             <Button onPress={handlerSubmitData} mt="50" colorScheme="cyan">
-              Submit
+              {t('common:submit')}
             </Button>
             {errorValidation && (
               <VStack mt={4} alignItems={'center'}>
