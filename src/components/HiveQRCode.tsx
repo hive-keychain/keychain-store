@@ -52,7 +52,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
     let value;
     if (ops) {
       value = encodeOps(ops);
-      //TODO to complete when needed for multiple operations.
+      //TODO to complete when needed for multiple operations..
     } else if (op) {
       if (!op[1].memo.includes(memoPrefix)) {
         op[1].memo = memoPrefix + op[1].memo;
