@@ -11,6 +11,7 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {MainDrawerParamList} from '../types/navigation.types';
 import ScreenLayout from './ScreenLayout';
@@ -18,22 +19,22 @@ import ScreenLayout from './ScreenLayout';
 type Props = DrawerScreenProps<MainDrawerParamList, 'InvoiceSuccess'>;
 
 export default ({navigation, route}: Props) => {
+  const {t} = useTranslation();
   const {params} = route;
-  console.log({params});
 
   return (
     <ScreenLayout>
       <VStack space={3}>
         <Heading marginBottom={10}>
           {' '}
-          <CheckCircleIcon size="5" mt="0.5" color="emerald.500" /> Payment
-          successful!
+          <CheckCircleIcon size="5" mt="0.5" color="emerald.500" />
+          {t('common:payment_success')}
         </Heading>
 
         {params && params.confirmedOperation && (
           <>
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Confirmed:</Text>
+              <Text fontWeight={'bold'}>{t('common:confirmed')}:</Text>
               <Text>
                 {moment
                   .unix(Number(params.confirmedOperation.updatedAt))
@@ -41,7 +42,7 @@ export default ({navigation, route}: Props) => {
               </Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text bold>From:</Text>
+              <Text bold>{t('common:from')}:</Text>
               <Text>@{params.confirmedOperation.from}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
@@ -49,15 +50,15 @@ export default ({navigation, route}: Props) => {
               <Text>@{params.confirmedOperation.to}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text bold>Amount:</Text>
+              <Text bold>{t('common:amount')}:</Text>
               <Text>{params.confirmedOperation.amount}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text bold>Memo:</Text>
+              <Text bold>{t('common:memo')}:</Text>
               <Text>{params.confirmedOperation.memo}</Text>
             </HStack>
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Created:</Text>
+              <Text fontWeight={'bold'}>{t('common:created')}:</Text>
               <Text>
                 {moment
                   .unix(Number(params.confirmedOperation.createdAt))
@@ -77,11 +78,11 @@ export default ({navigation, route}: Props) => {
               mr="0.5"
               color="muted.400"
             />
-            Check in History
+            {t('navigation:check_in_history')}
           </Link>
           <Link onPress={() => navigation.navigate('Home')}>
             <ArrowForwardIcon size="5" mt="0.5" mr="0.5" color="emerald.500" />
-            Next invoice
+            {t('navigation:next_invoice')}
           </Link>
         </HStack>
       </VStack>

@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import RNQRGenerator from 'rn-qr-generator';
+import {memoPrefix} from '../constants/prefix';
 import {HomeScreenProps} from '../screens/HomeScreen';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
@@ -51,7 +52,9 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
     let value;
     if (ops) {
       value = encodeOps(ops);
+      //TODO to complete when needed for multiple operations.
     } else if (op) {
+      op[1].memo = memoPrefix + op[1].memo;
       value = encodeOp(op);
       setOperation(op as TransferOperation);
     }
@@ -184,10 +187,10 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
               <Text fontWeight={'bold'}>{t('common:amount')}:</Text>
               <Text>{operation[1].amount as string}</Text>
             </HStack>
-            <HStack justifyContent={'space-between'}>
+            <VStack>
               <Text fontWeight={'bold'}>{t('common:memo')}:</Text>
-              <Text>{operation[1].memo}</Text>
-            </HStack>
+              <Text textAlign={'center'}>{operation[1].memo}</Text>
+            </VStack>
             <Text mt={15} textAlign={'center'}>
               {t('common:checking_confirmation', {
                 countDown: countDown.toString(),

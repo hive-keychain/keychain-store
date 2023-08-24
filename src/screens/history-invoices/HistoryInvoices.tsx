@@ -11,6 +11,7 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Loader from '../../components/Loader';
@@ -22,6 +23,7 @@ import HistoryInvoicesItem from './history-invoices-item/HistoryInvoicesItem';
 type Props = DrawerScreenProps<MainDrawerParamList, 'History'>;
 
 export default ({navigation}: Props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [invoiceHistoryList, setInvoiceHistoryList] = React.useState<
@@ -87,9 +89,11 @@ export default ({navigation}: Props) => {
         <Center h={'100%'}>
           <HStack space={3} alignItems={'center'}>
             <Icon2 size={30} name="segment" color={'red'} />
-            <Text fontSize={16}>No records where found.</Text>
+            <Text fontSize={16}>{t('common:no_records_found')}</Text>
           </HStack>
-          <Link onPress={() => navigation.navigate('Home')}>Go Home</Link>
+          <Link onPress={() => navigation.navigate('Home')}>
+            {t('navigation:link_go_home')}
+          </Link>
         </Center>
       ) : (
         <>
@@ -115,7 +119,7 @@ export default ({navigation}: Props) => {
                     bg: 'coolGray.900:alpha.70',
                   },
                 }}
-                placeholder="Search box"
+                placeholder={t('common:search_box_placeholder')}
                 w={'80%'}
                 value={searchQuery}
                 onChangeText={text => setSearchQuery(text)}

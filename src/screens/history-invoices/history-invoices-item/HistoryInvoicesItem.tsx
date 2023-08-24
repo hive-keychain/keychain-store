@@ -12,6 +12,7 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Avatar from '../../../components/Avatar';
 import {MainDrawerParamList} from '../../../types/navigation.types';
@@ -23,8 +24,8 @@ interface Props {
 }
 
 export default ({item, reloadParent}: Props) => {
+  const {t} = useTranslation();
   const [isExpanded, setIsExpanded] = React.useState(false);
-
   const navigation = useNavigation<DrawerNavigationProp<MainDrawerParamList>>();
 
   const gotoHome = () => {
@@ -50,7 +51,7 @@ export default ({item, reloadParent}: Props) => {
         <Text>{moment.unix(Number(item.createdAt)).format('L')}</Text>
         <Text>{item.amount}</Text>
         <Badge colorScheme={item.confirmed ? 'success' : 'warning'}>
-          {item.confirmed ? 'Confirmed' : 'Unconfirmed'}
+          {t(`common:${item.confirmed ? 'confirmed' : 'unconfirmed'}`)}
         </Badge>
         <Icon2
           name={isExpanded ? 'expand-less' : 'expand-more'}
@@ -66,7 +67,7 @@ export default ({item, reloadParent}: Props) => {
                 <Avatar size={'lg'} username={item.from} />
               </Center>
               <HStack justifyContent={'space-between'}>
-                <Text fontWeight={'bold'}>From:</Text>
+                <Text fontWeight={'bold'}>{t('common:from')}:</Text>
                 <Link
                   isExternal
                   href={`https://hiveblocks.com/@${item.from}`}
@@ -79,36 +80,36 @@ export default ({item, reloadParent}: Props) => {
           )}
 
           <HStack justifyContent={'space-between'}>
-            <Text fontWeight={'bold'}>Store:</Text>
+            <Text fontWeight={'bold'}>{t('common:store')}:</Text>
             <Text>@{item.to}</Text>
           </HStack>
 
           {item.createdAt && (
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Created:</Text>
+              <Text fontWeight={'bold'}>{t('common:created')}:</Text>
               <Text>{moment.unix(Number(item.createdAt)).format('lll')}</Text>
             </HStack>
           )}
           <HStack justifyContent={'space-between'}>
-            <Text fontWeight={'bold'}>Memo:</Text>
+            <Text fontWeight={'bold'}>{t('common:memo')}:</Text>
             <Text>{item.memo}</Text>
           </HStack>
           {item.updatedAt && (
             <HStack justifyContent={'space-between'}>
-              <Text fontWeight={'bold'}>Confirmed:</Text>
+              <Text fontWeight={'bold'}>{t('common:confirmed')}:</Text>
               <Text>{moment.unix(Number(item.updatedAt)).format('lll')}</Text>
             </HStack>
           )}
           {!item.confirmed && (
             <HStack mt={'3'} space={3} justifyContent={'center'}>
               <Button w={'90px'} onPress={gotoHome}>
-                Try again
+                {t('common:try_again')}
               </Button>
               <Button
                 onPress={() => handleDelete(item.memo)}
                 w={'90px'}
                 colorScheme="secondary">
-                Delete
+                {t('common:delete')}
               </Button>
             </HStack>
           )}

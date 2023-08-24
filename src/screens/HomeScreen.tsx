@@ -5,12 +5,14 @@ import {
   Button,
   CheckIcon,
   FormControl,
+  HStack,
   Heading,
   Icon,
   Input,
   InputGroup,
   Pressable,
   Select,
+  Stack,
   Text,
   VStack,
   WarningOutlineIcon,
@@ -21,6 +23,7 @@ import {NativeSyntheticEvent, TextInputFocusEventData} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import HiveQRCode from '../components/HiveQRCode';
 import ScreenLayout from '../components/ScreenLayout';
+import {memoPrefix} from '../constants/prefix';
 import {MainDrawerParamList} from '../types/navigation.types';
 import {AsyncStorageKey} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
@@ -163,6 +166,7 @@ export default (props: HomeScreenProps) => {
                 value={formData.name}
                 onBlur={handleOnBlurInput}
                 isReadOnly={lock}
+                fontSize={'sm'}
               />
 
               <FormControl.ErrorMessage
@@ -185,6 +189,7 @@ export default (props: HomeScreenProps) => {
                   width="50%"
                   onChangeText={value => setData({...formData, amount: value})}
                   value={formData.amount}
+                  fontSize={'sm'}
                 />
                 <Select
                   //@ts-ignore
@@ -195,7 +200,8 @@ export default (props: HomeScreenProps) => {
                   _selectedItem={{
                     endIcon: <CheckIcon size="5" />,
                   }}
-                  onValueChange={itemValue => setCurrency(itemValue)}>
+                  onValueChange={itemValue => setCurrency(itemValue)}
+                  fontSize={'sm'}>
                   <Select.Item label="HIVE" value="HIVE" />
                   <Select.Item label="HBD" value="HBD" />
                 </Select>
@@ -208,29 +214,43 @@ export default (props: HomeScreenProps) => {
                 }}>
                 {t('common:memo')}
               </FormControl.Label>
-              <Input
-                InputLeftElement={
-                  <Icon
-                    as={<Icon2 name="note" />}
-                    size={5}
-                    ml="2"
-                    color="muted.400"
+              <Stack alignItems={'center'} w={'100%'}>
+                <InputGroup
+                  w={{
+                    base: '100%',
+                  }}>
+                  <Input
+                    InputLeftElement={
+                      <HStack space={'1.5'} h={'100%'} alignItems={'center'}>
+                        <Icon
+                          as={<Icon2 name="note" />}
+                          size={5}
+                          ml="2"
+                          color="muted.400"
+                        />
+                        <Text fontSize={'sm'} mr={'-1.5'}>
+                          {memoPrefix}
+                        </Text>
+                      </HStack>
+                    }
+                    InputRightElement={
+                      <Pressable onPress={() => setMemo(generateMemo())}>
+                        <Icon
+                          as={<Icon2 name="replay" />}
+                          size={5}
+                          mr="2"
+                          color="muted.400"
+                        />
+                      </Pressable>
+                    }
+                    placeholder={t('common:my_awesome_shop_placeholder')}
+                    value={memo}
+                    onChangeText={value => handleSetMemo(value)}
+                    w={'100%'}
+                    fontSize={'sm'}
                   />
-                }
-                InputRightElement={
-                  <Pressable onPress={() => setMemo(generateMemo())}>
-                    <Icon
-                      as={<Icon2 name="replay" />}
-                      size={5}
-                      mr="2"
-                      color="muted.400"
-                    />
-                  </Pressable>
-                }
-                placeholder={t('common:my_awesome_shop_placeholder')}
-                value={memo}
-                onChangeText={value => handleSetMemo(value)}
-              />
+                </InputGroup>
+              </Stack>
             </FormControl>
             <Button onPress={handlerSubmitData} mt="50" colorScheme="cyan">
               {t('common:submit')}
