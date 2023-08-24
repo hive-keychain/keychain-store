@@ -19,11 +19,6 @@ import {AsyncStorageKey} from './src/utils/asyncstorage';
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
 
-//TODO
-//  - find an effective way to test this app in several android devices. research internet.
-//  - find if possible to test IOs???
-//   - check the TODOs, test in device...submit PR.
-
 function App(): JSX.Element {
   const [loadingApp, setLoadingApp] = React.useState(true);
 

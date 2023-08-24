@@ -85,8 +85,6 @@ const addInvoice = async (invoice: InvoiceData) => {
         AsyncStorageKey.INVOICE_HISTORY_LIST,
         JSON.stringify(invoiceList),
       );
-    } else {
-      console.log('Already stored!');
     }
   } catch (error) {
     console.log({ErrorStorage: error});

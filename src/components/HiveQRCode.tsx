@@ -54,7 +54,9 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       value = encodeOps(ops);
       //TODO to complete when needed for multiple operations.
     } else if (op) {
-      op[1].memo = memoPrefix + op[1].memo;
+      if (!op[1].memo.includes(memoPrefix)) {
+        op[1].memo = memoPrefix + op[1].memo;
+      }
       value = encodeOp(op);
       setOperation(op as TransferOperation);
     }
@@ -158,6 +160,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
 
   const handleCancel = () => {
     setOperation(null);
+    setQrCodeImg(null);
     resetTimer();
     goBack();
   };

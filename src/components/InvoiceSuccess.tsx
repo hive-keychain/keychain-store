@@ -25,11 +25,14 @@ export default ({navigation, route}: Props) => {
   return (
     <ScreenLayout>
       <VStack space={3}>
-        <Heading marginBottom={10}>
-          {' '}
+        <HStack
+          space={'1'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          marginBottom={10}>
           <CheckCircleIcon size="5" mt="0.5" color="emerald.500" />
-          {t('common:payment_success')}
-        </Heading>
+          <Heading>{t('common:payment_success')}</Heading>
+        </HStack>
 
         {params && params.confirmedOperation && (
           <>
@@ -53,10 +56,10 @@ export default ({navigation, route}: Props) => {
               <Text bold>{t('common:amount')}:</Text>
               <Text>{params.confirmedOperation.amount}</Text>
             </HStack>
-            <HStack justifyContent={'space-between'}>
+            <VStack>
               <Text bold>{t('common:memo')}:</Text>
-              <Text>{params.confirmedOperation.memo}</Text>
-            </HStack>
+              <Text textAlign={'center'}>{params.confirmedOperation.memo}</Text>
+            </VStack>
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:created')}:</Text>
               <Text>

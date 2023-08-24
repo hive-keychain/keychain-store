@@ -101,7 +101,6 @@ export default () => {
           onValueChange={itemValue => handleSelectLanguage(itemValue)}
           fontSize={'sm'}>
           {LANGUAGELIST.map(lang => {
-            console.log({lang}); //TODO remove line
             return (
               <Select.Item
                 key={lang.code}

@@ -32,7 +32,7 @@ const Loader = ({
             rotate: '360deg',
             scale: 1,
             transition: {
-              duration: 1000,
+              duration: 2000,
             },
           }}>
           <Image
