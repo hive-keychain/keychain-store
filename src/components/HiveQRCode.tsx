@@ -1,5 +1,5 @@
-import {Operation, TransferOperation} from '@hiveio/dhive';
-import {encodeOp, encodeOps} from 'hive-uri';
+import { Operation, TransferOperation } from '@hiveio/dhive';
+import { encodeOp, encodeOps } from 'hive-uri';
 import moment from 'moment';
 import {
   Box,
@@ -12,12 +12,12 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import RNQRGenerator from 'rn-qr-generator';
-import {memoPrefix} from '../constants/prefix';
-import {HomeScreenProps} from '../screens/HomeScreen';
-import {AsyncStorageUtils} from '../utils/asyncstorage';
-import {HiveUtils} from '../utils/hive';
+import { memoPrefix } from '../constants/prefix';
+import { HomeScreenProps } from '../screens/HomeScreen';
+import { AsyncStorageUtils } from '../utils/asyncstorage';
+import { HiveUtils } from '../utils/hive';
 import AlertBox from './AlertBox';
 import Loader from './Loader';
 
@@ -216,7 +216,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           />
         </VStack>
       )}
-      {qrCodeImg && confirmed && !error && <Loader fontSize={'lg'} />}
+      {qrCodeImg && confirmed && !error && <Loader />}
       {error && (
         <VStack space={2} justifyContent={'center'} alignItems={'center'}>
           <Text textAlign={'center'} color={'red.400'}>

@@ -3,7 +3,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {ScrollView, View} from 'native-base';
+import {HStack, Heading, Image, ScrollView, View} from 'native-base';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import Footer from './Footer';
@@ -17,7 +17,21 @@ export default (props: Props) => {
         style={style.container}
         contentContainerStyle={style.containerSpaced}>
         <View>
-          <DrawerItemList {...props} />
+          <HStack px={2} alignItems={'center'}>
+            <Image
+              source={require('../assets/keychain_logo_circular.png')}
+              alt="hive keychain logo"
+              resizeMode="contain"
+              height={30}
+              width={30}
+            />
+            <Heading textAlign={'center'} margin={'10'}>
+              Keychain Store
+            </Heading>
+          </HStack>
+          <View>
+            <DrawerItemList {...props} />
+          </View>
         </View>
         <Footer {...props} />
       </ScrollView>
