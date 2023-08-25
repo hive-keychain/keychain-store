@@ -12,9 +12,6 @@ import HomeScreen from './src/screens/HomeScreen';
 import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
 import {MainDrawerParamList} from './src/types/navigation.types';
 
-//TODO here:
-// On QR Code page, make the field larger, on my phone the memo is too long and goes to the next line, the parent div should be larger.
-
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
 
 function App(): JSX.Element {

@@ -166,7 +166,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   };
 
   return (
-    <VStack>
+    <VStack width={'100%'} maxW="350px" alignSelf={'center'}>
       {!qrCodeImg && !confirmed && <Text>{t('common:generating')}</Text>}
       {qrCodeImg && !confirmed && operation && (
         <VStack space={1} alignItems={'center'}>

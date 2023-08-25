@@ -130,9 +130,9 @@ export default (props: HomeScreenProps) => {
 
   return (
     <ScreenLayout>
-      <VStack width="100%" mx="3" maxW="300px">
+      <VStack width="100%" mx="3">
         {!showQR && (
-          <>
+          <VStack width="100%" maxW="300px" mx={'3'} alignSelf={'center'}>
             <Heading bold>{t('common:new_invoice')}</Heading>
             <FormControl isRequired isInvalid={!userExist}>
               <FormControl.Label
@@ -260,7 +260,7 @@ export default (props: HomeScreenProps) => {
                 <Text>{errorValidation}</Text>
               </VStack>
             )}
-          </>
+          </VStack>
         )}
         {showQR && (
           <HiveQRCode
