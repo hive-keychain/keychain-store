@@ -24,7 +24,7 @@ export default ({navigation, route}: Props) => {
 
   return (
     <ScreenLayout>
-      <VStack space={3}>
+      <VStack width={'70%'} space={3}>
         <HStack
           space={'1'}
           alignItems={'center'}
