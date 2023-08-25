@@ -81,7 +81,7 @@ export default ({navigation}: Props) => {
 
   return loading ? (
     <ScreenLayout>
-      <Loader fontSize={'lg'} />
+      <Loader />
     </ScreenLayout>
   ) : (
     <ScreenLayout>

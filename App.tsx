@@ -12,10 +12,16 @@ import {FALLBACKLANGUAGECODE} from './src/constants/localization';
 import DrawerContent from './src/drawer/Content';
 import i18n from './src/localization/i18n';
 import HomeScreen from './src/screens/HomeScreen';
-import Settings from './src/screens/Settings';
 import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
 import {MainDrawerParamList} from './src/types/navigation.types';
 import {AsyncStorageKey} from './src/utils/asyncstorage';
+
+//TODO here:
+// Regarding the store please change the following :
+// Delete the Settings menu
+// Language should be automatically according to device language
+// On Invoice history, use the form fieldl(same as main page design) with a "Filter" title, for the filter you made
+// On QR Code page, make the field larger, on my phone the memo is too long and goes to the next line, the parent div should be larger.
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
 
@@ -64,14 +70,6 @@ function App(): JSX.Element {
               component={HistoryInvoices}
               options={{
                 title: t('navigation:historyTitle'),
-                unmountOnBlur: true,
-              }}
-            />
-            <Drawer.Screen
-              name="Settings"
-              component={Settings}
-              options={{
-                title: t('navigation:settingsTitle'),
                 unmountOnBlur: true,
               }}
             />

@@ -27,12 +27,4 @@ export default {
   store: 'Tienda',
   try_again: 'Reintentar',
   delete: 'Borrar',
-  danger_zone: 'Zona Peligrosa',
-  delete_all_data: 'Borrar toda la data',
-  alert_box_header_caution: 'Continúe con precaución',
-  alert_box_body_deletion:
-    '¿Quieres borrar todos los datos de la aplicación? Esto borrará todos los datos definitivamente.',
-  confirm_delete: 'Si, Borrar',
-  data_deleted: 'Todos los datos borrados del teléfono.',
-  language_settings: 'Ajustes de idioma',
 };

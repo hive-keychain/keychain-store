@@ -27,12 +27,4 @@ export default {
   store: 'Store',
   try_again: 'Try again',
   delete: 'Delete',
-  danger_zone: 'Danger Zone',
-  delete_all_data: 'Delete All Data',
-  alert_box_header_caution: 'Proceed with caution',
-  alert_box_body_deletion:
-    'Do you want to wipe all data from the app? This will erase all data definetely.',
-  confirm_delete: 'Yes, Delete',
-  data_deleted: 'All Data deleted from phone.',
-  language_settings: 'Language Settings',
 };
