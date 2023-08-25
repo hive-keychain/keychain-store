@@ -89,7 +89,7 @@ function App(): JSX.Element {
         </NavigationContainer>
       ) : (
         <ScreenLayout>
-          <Loader circularLogo />
+          <Loader />
         </ScreenLayout>
       )}
     </NativeBaseProvider>
