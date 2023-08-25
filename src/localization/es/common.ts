@@ -27,4 +27,5 @@ export default {
   store: 'Tienda',
   try_again: 'Reintentar',
   delete: 'Borrar',
+  filter: 'Filtro',
 };

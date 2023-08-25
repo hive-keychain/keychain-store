@@ -27,4 +27,5 @@ export default {
   store: 'Store',
   try_again: 'Try again',
   delete: 'Delete',
+  filter: 'Filter',
 };

@@ -4,6 +4,7 @@ import {
   Box,
   Center,
   FlatList,
+  FormControl,
   HStack,
   Input,
   Link,
@@ -97,33 +98,43 @@ export default ({navigation}: Props) => {
         </Center>
       ) : (
         <>
-          <VStack space={'0.2'} alignItems={'center'}>
+          <VStack marginTop={3} space={'0.2'} alignItems={'center'}>
             {showSearchBox && (
-              <Input
-                shadow={2}
-                _light={{
-                  bg: 'coolGray.100',
-                  _hover: {
-                    bg: 'coolGray.200',
-                  },
-                  _focus: {
-                    bg: 'coolGray.200:alpha.70',
-                  },
-                }}
-                _dark={{
-                  bg: 'coolGray.800',
-                  _hover: {
-                    bg: 'coolGray.900',
-                  },
-                  _focus: {
-                    bg: 'coolGray.900:alpha.70',
-                  },
-                }}
-                placeholder={t('common:search_box_placeholder')}
-                w={'80%'}
-                value={searchQuery}
-                onChangeText={text => setSearchQuery(text)}
-              />
+              <FormControl>
+                <HStack alignItems={'center'} justifyContent={'center'}>
+                  <FormControl.Label
+                    _text={{
+                      bold: true,
+                    }}>
+                    {t('common:filter')}{' '}
+                  </FormControl.Label>
+                  <Input
+                    shadow={2}
+                    _light={{
+                      bg: 'coolGray.100',
+                      _hover: {
+                        bg: 'coolGray.200',
+                      },
+                      _focus: {
+                        bg: 'coolGray.200:alpha.70',
+                      },
+                    }}
+                    _dark={{
+                      bg: 'coolGray.800',
+                      _hover: {
+                        bg: 'coolGray.900',
+                      },
+                      _focus: {
+                        bg: 'coolGray.900:alpha.70',
+                      },
+                    }}
+                    placeholder={t('common:search_box_placeholder')}
+                    w={'80%'}
+                    value={searchQuery}
+                    onChangeText={text => setSearchQuery(text)}
+                  />
+                </HStack>
+              </FormControl>
             )}
             <Icon2
               name={showSearchBox ? 'expand-less' : 'expand-more'}

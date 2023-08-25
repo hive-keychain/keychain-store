@@ -13,7 +13,6 @@ import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
 import {MainDrawerParamList} from './src/types/navigation.types';
 
 //TODO here:
-// On Invoice history, use the form fieldl(same as main page design) with a "Filter" title, for the filter you made
 // On QR Code page, make the field larger, on my phone the memo is too long and goes to the next line, the parent div should be larger.
 
 const Drawer = createDrawerNavigator<MainDrawerParamList>();
