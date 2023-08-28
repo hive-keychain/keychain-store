@@ -97,7 +97,7 @@ export default ({navigation}: Props) => {
         </Center>
       ) : (
         <>
-          <FormControl width={'90%'}>
+          <FormControl width={'90%'} mt={5}>
             <FormControl.Label
               _text={{
                 bold: true,
@@ -115,10 +115,13 @@ export default ({navigation}: Props) => {
               }
               InputRightElement={
                 <Icon
-                  as={<Icon2 name="x" />}
+                  as={<Icon2 name="clear" />}
                   size={5}
-                  ml="2"
+                  mr="2"
                   color="muted.400"
+                  onPress={() => {
+                    setSearchQuery('');
+                  }}
                 />
               }
               placeholder={t('common:search_box_placeholder')}
@@ -127,6 +130,7 @@ export default ({navigation}: Props) => {
             />
           </FormControl>
           <FlatList
+            mt={10}
             ref={flatListRef}
             data={filteredInvoiceHistoryList}
             renderItem={data => (

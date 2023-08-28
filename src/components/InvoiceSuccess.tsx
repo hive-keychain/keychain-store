@@ -24,7 +24,7 @@ export default ({navigation, route}: Props) => {
 
   return (
     <ScreenLayout>
-      <VStack width={'70%'} space={3}>
+      <VStack minWidth="70%" maxWidth={'90%'} space={3}>
         <HStack
           space={'1'}
           alignItems={'center'}
@@ -56,10 +56,10 @@ export default ({navigation, route}: Props) => {
               <Text bold>{t('common:amount')}:</Text>
               <Text>{params.confirmedOperation.amount}</Text>
             </HStack>
-            <VStack>
+            <HStack justifyContent={'space-between'}>
               <Text bold>{t('common:memo')}:</Text>
               <Text textAlign={'center'}>{params.confirmedOperation.memo}</Text>
-            </VStack>
+            </HStack>
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:created')}:</Text>
               <Text>
@@ -76,7 +76,7 @@ export default ({navigation, route}: Props) => {
           alignContent={'center'}>
           <Link onPress={() => navigation.navigate('History')} mb={2}>
             <Icon
-              as={<Icon2 name="replay" />}
+              as={<Icon2 name="list" />}
               size={5}
               mr="0.5"
               color="muted.400"
