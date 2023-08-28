@@ -44,9 +44,14 @@ export default ({item, reloadParent}: Props) => {
       reloadParent();
     }
   };
-
+  console.log(item.createdAt);
   return (
-    <Box w={'100%'} borderColor="muted.800" borderBottomWidth={1} mb={2} p={2}>
+    <Box
+      w={'100%'}
+      borderColor="muted.800"
+      borderBottomWidth={0.3}
+      mb={2}
+      p={2}>
       <HStack justifyContent={'space-between'}>
         <Text>{moment.unix(Number(item.createdAt)).format('L')}</Text>
         <Text>{item.amount}</Text>

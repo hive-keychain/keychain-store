@@ -1,16 +1,7 @@
 import {Operation, TransferOperation} from '@hiveio/dhive';
 import {encodeOp, encodeOps} from 'hive-uri';
 import moment from 'moment';
-import {
-  Box,
-  Button,
-  HStack,
-  Image,
-  Link,
-  Text,
-  Toast,
-  VStack,
-} from 'native-base';
+import {Button, HStack, Image, Link, Text, VStack} from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import RNQRGenerator from 'rn-qr-generator';
@@ -116,17 +107,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       await AsyncStorageUtils.updateInvoice(memo, found.from, true);
       const confirmedInvoice = await AsyncStorageUtils.getInvoice(memo);
       if (confirmedInvoice) {
-        Toast.show({
-          render: () => {
-            return (
-              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-                {t('common:toast_confirmed_invoice')} {confirmedInvoice.amount}
-              </Box>
-            );
-          },
-          duration: 5000,
-          placement: 'top',
-        });
         props.navigation.reset({
           index: 0,
           routes: [

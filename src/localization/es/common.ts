@@ -6,7 +6,6 @@ export default {
   amount_placeholder: 'ej. 1.000',
   memo: 'Memo',
   submit: 'Enviar',
-  toast_confirmed_invoice: 'Factura confirmada. Recibida',
   generating: 'Generando...',
   scan_qr_code: 'Escanee este código QR',
   to: 'Destinatario',
