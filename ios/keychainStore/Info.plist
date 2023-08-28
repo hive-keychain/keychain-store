@@ -45,6 +45,8 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+<string>Access camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>
