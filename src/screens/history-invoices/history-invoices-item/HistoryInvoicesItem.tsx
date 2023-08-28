@@ -32,7 +32,7 @@ export default ({item, reloadParent}: Props) => {
     navigation.navigate('Home', {
       toConfirmOperation: {
         store: item.to,
-        memo: item.memo,
+        memo: item.memo.replace('kcs-', ''),
         amount: item.amount,
       },
     });

@@ -1,1 +1,1 @@
-export const memoPrefix = 'ksc-';
+export const memoPrefix = 'kcs-';

@@ -69,11 +69,7 @@ export default (props: HomeScreenProps) => {
 
   React.useEffect(() => {
     const reconfirmationParams = props.route.params;
-    console.log(
-      reconfirmationParams,
-      reconfirmationParams?.toConfirmOperation,
-      reconfirmationParams?.toConfirmOperation.memo,
-    );
+
     if (
       reconfirmationParams &&
       reconfirmationParams.toConfirmOperation &&
@@ -95,15 +91,23 @@ export default (props: HomeScreenProps) => {
         amount: reconfirmationAmount.split(' ')[0],
       });
       setMemo(reconfirmationMemo);
-      handlerSubmitData();
+      handlerSubmitData(
+        reconfirmationStore,
+        reconfirmationAmount.split(' ')[0],
+        reconfirmationMemo,
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.route.params]);
 
-  const handlerSubmitData = async () => {
+  const handlerSubmitData = async (
+    name: string,
+    amount: string,
+    memo: string,
+  ) => {
     if (
-      formData.name.trim().length === 0 ||
-      formData.amount.trim().length === 0 ||
+      name.trim().length === 0 ||
+      amount.trim().length === 0 ||
       memo.trim().length === 0 ||
       !userExist
     ) {
@@ -190,7 +194,6 @@ export default (props: HomeScreenProps) => {
                 <Input
                   keyboardType="number-pad"
                   placeholder={t('common:amount_placeholder')}
-                  isDisabled={lock}
                   width="50%"
                   onChangeText={value => setData({...formData, amount: value})}
                   value={formData.amount}
@@ -263,7 +266,12 @@ export default (props: HomeScreenProps) => {
                 </InputGroup>
               </Stack>
             </FormControl>
-            <Button onPress={handlerSubmitData} mt="50" colorScheme="cyan">
+            <Button
+              onPress={() => {
+                handlerSubmitData(formData.name, formData.amount, memo);
+              }}
+              mt="50"
+              colorScheme="cyan">
               {t('common:submit')}
             </Button>
             {errorValidation && (
