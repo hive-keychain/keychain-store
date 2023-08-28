@@ -181,7 +181,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             size={'2xl'}
             resizeMethod="auto"
           />
-          <VStack>
+          <VStack maxWidth="90%">
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:to')}:</Text>
               <Text>@{operation[1].to}</Text>
@@ -190,10 +190,10 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
               <Text fontWeight={'bold'}>{t('common:amount')}:</Text>
               <Text>{operation[1].amount as string}</Text>
             </HStack>
-            <VStack>
+            <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:memo')}:</Text>
-              <Text textAlign={'center'}>{operation[1].memo}</Text>
-            </VStack>
+              <Text>{operation[1].memo}</Text>
+            </HStack>
             <Text mt={15} textAlign={'center'}>
               {t('common:checking_confirmation', {
                 countDown: countDown.toString(),

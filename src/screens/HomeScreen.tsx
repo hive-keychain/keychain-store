@@ -130,7 +130,7 @@ export default (props: HomeScreenProps) => {
 
   return (
     <ScreenLayout>
-      <VStack width="100%" mx="3">
+      <VStack width="100%">
         {!showQR && (
           <VStack width="100%" maxW="300px" mx={'3'} alignSelf={'center'}>
             <Heading bold>{t('common:new_invoice')}</Heading>
@@ -221,14 +221,20 @@ export default (props: HomeScreenProps) => {
                   }}>
                   <Input
                     InputLeftElement={
-                      <HStack space={'1.5'} h={'100%'} alignItems={'center'}>
+                      <HStack
+                        space={'1.5'}
+                        h={'100%'}
+                        alignItems={'center'}
+                        backgroundColor="red"
+                        mr={'0'}
+                        pr={'0'}>
                         <Icon
                           as={<Icon2 name="note" />}
                           size={5}
                           ml="2"
                           color="muted.400"
                         />
-                        <Text fontSize={'sm'} mr={'-1.5'}>
+                        <Text fontSize={'sm'} mr={'-2.5'}>
                           {memoPrefix}
                         </Text>
                       </HStack>

@@ -22,10 +22,10 @@ export default (props: Props) => {
               source={require('../assets/keychain_logo_circular.png')}
               alt="hive keychain logo"
               resizeMode="contain"
-              height={30}
-              width={30}
+              height={50}
+              width={50}
             />
-            <Heading textAlign={'center'} margin={'10'}>
+            <Heading textAlign={'center'} marginY={'10'} marginLeft={'3'}>
               Keychain Store
             </Heading>
           </HStack>
