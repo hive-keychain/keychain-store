@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android-bundle": "rm -rf android/app/build/outputs/bundle/* && cd android && ./gradlew bundleRelease && cd ..",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
