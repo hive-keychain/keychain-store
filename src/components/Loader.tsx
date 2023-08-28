@@ -1,7 +1,7 @@
 import {Image, PresenceTransition, VStack} from 'native-base';
 import React from 'react';
 
-const Loader = ({}) => {
+const Loader = ({size}: {size?: number}) => {
   return (
     <VStack space={2} justifyContent="center">
       <PresenceTransition
@@ -18,8 +18,8 @@ const Loader = ({}) => {
           alt="hive keychain logo"
           resizeMode={'contain'}
           borderRadius={'sm'}
-          height={'70px'}
-          width={'70px'}
+          height={size || '70px'}
+          width={size || '70px'}
         />
       </PresenceTransition>
     </VStack>

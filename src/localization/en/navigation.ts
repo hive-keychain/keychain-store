@@ -1,5 +1,5 @@
 export default {
-  homeTitle: 'Invoice Store Generator',
+  homeTitle: 'Invoice Generator',
   historyTitle: 'Invoice History',
   invoiceSuccessTitle: 'Payment confirmation',
   link_go_home: 'Go home!',

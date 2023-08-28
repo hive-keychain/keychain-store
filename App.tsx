@@ -60,7 +60,7 @@ function App(): JSX.Element {
         </NavigationContainer>
       ) : (
         <ScreenLayout>
-          <Loader />
+          <Loader size={120} />
         </ScreenLayout>
       )}
     </NativeBaseProvider>
