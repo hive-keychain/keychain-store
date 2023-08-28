@@ -113,7 +113,7 @@ export default ({item, reloadParent}: Props) => {
               <Button
                 onPress={() => handleDelete(item.memo)}
                 w={'90px'}
-                colorScheme="secondary">
+                colorScheme="danger">
                 {t('common:delete')}
               </Button>
             </HStack>

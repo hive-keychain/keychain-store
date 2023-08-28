@@ -3,7 +3,7 @@ export default {
   shop_username: 'Shop Username',
   my_awesome_shop_placeholder: 'myawesomeshop',
   amount: 'Amount',
-  amount_placeholder: 'ex. 1.000',
+  amount_placeholder: '1.000',
   memo: 'Memo',
   submit: 'Submit',
   generating: 'Generating...',

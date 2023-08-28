@@ -180,7 +180,9 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             </Text>
           </VStack>
           <HStack space={2} mt={30}>
-            <Button onPress={() => setShowAlertBox(true)}>
+            <Button
+              onPress={() => setShowAlertBox(true)}
+              colorScheme={'danger'}>
               {t('common:cancel_invoice')}
             </Button>
           </HStack>

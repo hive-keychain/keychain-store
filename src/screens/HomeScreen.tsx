@@ -35,7 +35,7 @@ export default (props: HomeScreenProps) => {
   const {t} = useTranslation();
   const [formData, setData] = React.useState({
     name: '',
-    amount: '0.001',
+    amount: '',
     memo: '',
   });
   const [lock, setLock] = React.useState(false);
@@ -69,6 +69,11 @@ export default (props: HomeScreenProps) => {
 
   React.useEffect(() => {
     const reconfirmationParams = props.route.params;
+    console.log(
+      reconfirmationParams,
+      reconfirmationParams?.toConfirmOperation,
+      reconfirmationParams?.toConfirmOperation.memo,
+    );
     if (
       reconfirmationParams &&
       reconfirmationParams.toConfirmOperation &&
