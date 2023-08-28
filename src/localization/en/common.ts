@@ -22,7 +22,7 @@ export default {
   from: 'From',
   created: 'Created',
   no_records_found: 'No records where found.',
-  search_box_placeholder: 'Search box',
+  search_box_placeholder: 'Input filters',
   unconfirmed: 'Unconfirmed',
   store: 'Store',
   try_again: 'Try again',

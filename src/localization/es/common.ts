@@ -22,7 +22,7 @@ export default {
   from: 'Envía',
   created: 'Creado',
   no_records_found: 'No se encontraron registros.',
-  search_box_placeholder: 'Caja de búsqueda',
+  search_box_placeholder: 'Ingrese filtros',
   unconfirmed: 'No confirmado',
   store: 'Tienda',
   try_again: 'Reintentar',

@@ -6,10 +6,10 @@ import {
   FlatList,
   FormControl,
   HStack,
+  Icon,
   Input,
   Link,
   Text,
-  VStack,
 } from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
@@ -34,7 +34,6 @@ export default ({navigation}: Props) => {
   const [filteredInvoiceHistoryList, setFilteredInvoiceHistoryList] =
     React.useState<InvoiceData[]>([]);
   const [searchQuery, setSearchQuery] = React.useState<string>('');
-  const [showSearchBox, setShowSearchBox] = React.useState<boolean>(false);
   const flatListRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -98,50 +97,35 @@ export default ({navigation}: Props) => {
         </Center>
       ) : (
         <>
-          <VStack marginTop={3} space={'0.2'} alignItems={'center'}>
-            {showSearchBox && (
-              <FormControl>
-                <HStack alignItems={'center'} justifyContent={'center'}>
-                  <FormControl.Label
-                    _text={{
-                      bold: true,
-                    }}>
-                    {t('common:filter')}{' '}
-                  </FormControl.Label>
-                  <Input
-                    shadow={2}
-                    _light={{
-                      bg: 'coolGray.100',
-                      _hover: {
-                        bg: 'coolGray.200',
-                      },
-                      _focus: {
-                        bg: 'coolGray.200:alpha.70',
-                      },
-                    }}
-                    _dark={{
-                      bg: 'coolGray.800',
-                      _hover: {
-                        bg: 'coolGray.900',
-                      },
-                      _focus: {
-                        bg: 'coolGray.900:alpha.70',
-                      },
-                    }}
-                    placeholder={t('common:search_box_placeholder')}
-                    w={'80%'}
-                    value={searchQuery}
-                    onChangeText={text => setSearchQuery(text)}
-                  />
-                </HStack>
-              </FormControl>
-            )}
-            <Icon2
-              name={showSearchBox ? 'expand-less' : 'expand-more'}
-              size={25}
-              onPress={() => setShowSearchBox(!showSearchBox)}
+          <FormControl width={'90%'}>
+            <FormControl.Label
+              _text={{
+                bold: true,
+              }}>
+              {t('common:filter')}{' '}
+            </FormControl.Label>
+            <Input
+              InputLeftElement={
+                <Icon
+                  as={<Icon2 name="search" />}
+                  size={5}
+                  ml="2"
+                  color="muted.400"
+                />
+              }
+              InputRightElement={
+                <Icon
+                  as={<Icon2 name="x" />}
+                  size={5}
+                  ml="2"
+                  color="muted.400"
+                />
+              }
+              placeholder={t('common:search_box_placeholder')}
+              value={searchQuery}
+              onChangeText={text => setSearchQuery(text)}
             />
-          </VStack>
+          </FormControl>
           <FlatList
             ref={flatListRef}
             data={filteredInvoiceHistoryList}
