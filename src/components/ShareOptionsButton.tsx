@@ -1,27 +1,27 @@
-import {Button} from 'native-base';
-import React from 'react';
-import Share from 'react-native-share';
+// import {Button} from 'native-base';
+// import React from 'react';
+// import Share from 'react-native-share';
 
-interface Props {
-  title: string;
-  qrCodeImg: string;
-  invoiceMemo?: string;
-}
-//TODO use share options when needed!
-export default ({title, qrCodeImg, invoiceMemo}: Props) => {
-  const handleSharingOptions = async () => {
-    const shareOptions = {
-      title: `Share Invoice ${invoiceMemo}`,
-      url: qrCodeImg as string,
-      failOnCancel: false,
-      //message: 'Share Invoice',
-    };
-    try {
-      const ShareResponse = await Share.open(shareOptions);
-      console.log('Result =>', ShareResponse);
-    } catch (error) {
-      console.log('Error =>', error);
-    }
-  };
-  return <Button onPress={handleSharingOptions}>{title}</Button>;
-};
+// interface Props {
+//   title: string;
+//   qrCodeImg: string;
+//   invoiceMemo?: string;
+// }
+// //TODO use share options when needed!
+// export default ({title, qrCodeImg, invoiceMemo}: Props) => {
+//   const handleSharingOptions = async () => {
+//     const shareOptions = {
+//       title: `Share Invoice ${invoiceMemo}`,
+//       url: qrCodeImg as string,
+//       failOnCancel: false,
+//       //message: 'Share Invoice',
+//     };
+//     try {
+//       const ShareResponse = await Share.open(shareOptions);
+//       console.log('Result =>', ShareResponse);
+//     } catch (error) {
+//       console.log('Error =>', error);
+//     }
+//   };
+//   return <Button onPress={handleSharingOptions}>{title}</Button>;
+// };
