@@ -10,7 +10,6 @@ import {HomeScreenProps} from '../screens/HomeScreen';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
 import AlertBox from './AlertBox';
-import Loader from './Loader';
 
 type Op = {
   ops?: never;
@@ -197,7 +196,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
           />
         </VStack>
       )}
-      {qrCodeImg && confirmed && !error && <Loader />}
       {error && (
         <VStack space={2} justifyContent={'center'} alignItems={'center'}>
           <Text textAlign={'center'} color={'red.400'}>

@@ -169,6 +169,7 @@ export default (props: HomeScreenProps) => {
                     />
                   </Pressable>
                 }
+                autoCapitalize="none"
                 placeholder={t('common:my_awesome_shop_placeholder')}
                 isDisabled={lock}
                 onChangeText={value => setData({...formData, name: value})}
@@ -192,7 +193,7 @@ export default (props: HomeScreenProps) => {
               </FormControl.Label>
               <InputGroup>
                 <Input
-                  keyboardType="number-pad"
+                  keyboardType="decimal-pad"
                   placeholder={t('common:amount_placeholder')}
                   width="50%"
                   onChangeText={value => setData({...formData, amount: value})}
