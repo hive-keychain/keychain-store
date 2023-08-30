@@ -196,9 +196,12 @@ export default (props: HomeScreenProps) => {
                   keyboardType="decimal-pad"
                   placeholder={t('common:amount_placeholder')}
                   width="50%"
-                  onChangeText={value => setData({...formData, amount: value})}
+                  onChangeText={value =>
+                    setData({...formData, amount: value.replace(',', '.')})
+                  }
                   value={formData.amount}
                   fontSize={'sm'}
+                  returnKeyType="done"
                 />
                 <Select
                   //@ts-ignore
