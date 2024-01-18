@@ -5,7 +5,6 @@ import {Button, HStack, Image, Link, Text, VStack} from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import RNQRGenerator from 'rn-qr-generator';
-import {memoPrefix} from '../constants/prefix';
 import {HomeScreenProps} from '../screens/HomeScreen';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
 import {HiveUtils} from '../utils/hive';
@@ -44,9 +43,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       value = encodeOps(ops);
       //TODO to complete when needed for multiple operations..
     } else if (op) {
-      if (!op[1].memo.includes(memoPrefix)) {
-        op[1].memo = memoPrefix + op[1].memo;
-      }
       value = encodeOp(op);
       setOperation(op as TransferOperation);
     }

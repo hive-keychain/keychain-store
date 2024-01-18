@@ -46,6 +46,7 @@ export default (props: HomeScreenProps) => {
   );
   const [showQR, setSetShowQR] = React.useState(false);
   const [userExist, setUserExist] = React.useState(true);
+  const [completeMemoPrefix, setMemoPrefix] = React.useState('');
 
   const handleResetForm = () => {
     handleSetMemo('');
@@ -58,6 +59,7 @@ export default (props: HomeScreenProps) => {
   }, []);
 
   const init = async () => {
+    setMemoPrefix(memoPrefix + generateMemo(12) + ' ');
     const lastStoreName = await AsyncStorage.getItem(
       AsyncStorageKey.LAST_STORE_NAME,
     );
@@ -108,7 +110,7 @@ export default (props: HomeScreenProps) => {
     if (
       name.trim().length === 0 ||
       amount.trim().length === 0 ||
-      memo.trim().length === 0 ||
+      (completeMemoPrefix + memo).trim().length === 0 ||
       !userExist
     ) {
       setErrorValidation(t('error:missing_fields'));
@@ -219,7 +221,7 @@ export default (props: HomeScreenProps) => {
                 </Select>
               </InputGroup>
             </FormControl>
-            <FormControl isRequired>
+            <FormControl>
               <FormControl.Label
                 _text={{
                   bold: true,
@@ -247,19 +249,9 @@ export default (props: HomeScreenProps) => {
                           color="muted.400"
                         />
                         <Text fontSize={'sm'} mr={'-2.5'}>
-                          {memoPrefix}
+                          {completeMemoPrefix}
                         </Text>
                       </HStack>
-                    }
-                    InputRightElement={
-                      <Pressable onPress={() => setMemo(generateMemo())}>
-                        <Icon
-                          as={<Icon2 name="replay" />}
-                          size={5}
-                          mr="2"
-                          color="muted.400"
-                        />
-                      </Pressable>
                     }
                     placeholder={t('common:my_awesome_shop_placeholder')}
                     value={memo}
@@ -294,7 +286,7 @@ export default (props: HomeScreenProps) => {
                   amount: Number(formData.amount).toFixed(3) + ' ' + currency,
                   from: '',
                   to: formData.name,
-                  memo: memo,
+                  memo: completeMemoPrefix + memo,
                 },
               ] as TransferOperation
             }

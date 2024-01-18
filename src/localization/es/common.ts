@@ -1,7 +1,7 @@
 export default {
   new_invoice: 'Nueva Factura',
   shop_username: 'Tienda',
-  my_awesome_shop_placeholder: 'miasombrosatienda',
+  my_awesome_shop_placeholder: 'Descripción',
   amount: 'Monto',
   amount_placeholder: '1.000',
   memo: 'Memo',
