@@ -44,7 +44,6 @@ export default ({item, reloadParent}: Props) => {
       reloadParent();
     }
   };
-  console.log(item.createdAt);
   return (
     <Box
       w={'100%'}
