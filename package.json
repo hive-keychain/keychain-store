@@ -10,7 +10,7 @@
     "start": "react-native start",
     "test": "jest",
     "android-clean": "cd android && ./gradlew clean && cd ..",
-    "dep-clean": "rm -rf node_modules && npm install && npx jetify",
+    "dep-clean": "rm -rf node_modules && npm install",
     "clean": "watchman watch-del-all &&npm run dep-clean && npm run android-clean && npm run start -- --reset-cache"
   },
   "dependencies": {
