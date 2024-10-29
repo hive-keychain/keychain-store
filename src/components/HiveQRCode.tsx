@@ -1,9 +1,13 @@
 import {Operation, TransferOperation} from '@hiveio/dhive';
 import {encodeOp, encodeOps} from 'hive-uri';
 import moment from 'moment';
-import {Button, HStack, Image, Link, Text, VStack} from 'native-base';
+import {Button, HStack, Icon, Image, Link, Text, VStack} from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
+import {Platform} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Share from 'react-native-share';
+import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import RNQRGenerator from 'rn-qr-generator';
 import {HomeScreenProps} from '../screens/HomeScreen';
 import {AsyncStorageUtils} from '../utils/asyncstorage';
@@ -28,6 +32,7 @@ type Props = {
 const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   const {t} = useTranslation();
   const [qrCodeImg, setQrCodeImg] = React.useState<string | null>(null);
+  const [qrCodeBase64, setQrCodeBase64] = React.useState<string | undefined>();
   const [confirmed, setConfirmed] = React.useState(false);
   const [countDown, setCountdown] = React.useState(5);
   const [timer, setTimer] = React.useState<NodeJS.Timer | null>(null);
@@ -36,6 +41,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   );
   const [showAlertBox, setShowAlertBox] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
+  const [encodedOp, setEncodedOp] = React.useState<any>(null);
 
   const init = React.useCallback(() => {
     let value;
@@ -44,6 +50,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       //TODO to complete when needed for multiple operations..
     } else if (op) {
       value = encodeOp(op);
+      setEncodedOp(value);
       setOperation(op as TransferOperation);
     }
     RNQRGenerator.generate({
@@ -51,10 +58,13 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       height: 500,
       width: 500,
       correctionLevel: 'H',
+      base64: true,
     })
       .then(async response => {
-        const {uri} = response;
+        const {uri, base64} = response;
+        setQrCodeBase64(base64);
         setQrCodeImg(uri);
+        console.log('uri', uri);
         await AsyncStorageUtils.addInvoice({
           from: '',
           to: op?.[1].to!,
@@ -155,6 +165,84 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             size={'2xl'}
             resizeMethod="auto"
           />
+          <TouchableOpacity
+            onPress={() => {
+              const message = `@${operation[1].to} sent you a ${operation[1].amount} invoice. Follow this link to pay in Keychain:`;
+              const url = encodedOp.replace(
+                'hive://sign/op/',
+                'https://hive-keychain.com/#invoice/',
+              );
+              const title = 'Keychain Store Invoice';
+              const icon = 'data:image/png;base64,' + qrCodeBase64;
+              const options = Platform.select({
+                ios: {
+                  activityItemSources: [
+                    {
+                      // For sharing url with custom title.
+                      placeholderItem: {type: 'url', content: url},
+                      item: {
+                        default: {type: 'url', content: url},
+                      },
+                      subject: {
+                        default: title,
+                      },
+                      linkMetadata: {originalUrl: url, url, title},
+                    },
+                    {
+                      // For sharing text.
+                      placeholderItem: {type: 'text', content: message},
+                      item: {
+                        default: {type: 'text', content: message},
+                        message: null, // Specify no text to share via Messages app.
+                      },
+                      linkMetadata: {
+                        // For showing app icon on share preview.
+                        title: message,
+                      },
+                    },
+                    {
+                      // For using custom icon instead of default text icon at share preview when sharing with message.
+                      placeholderItem: {
+                        type: 'url',
+                        content: icon,
+                      },
+                      item: {
+                        default: {
+                          type: 'text',
+                          content: `${message} ${url}`,
+                        },
+                      },
+                      linkMetadata: {
+                        title: message,
+                        icon: icon,
+                      },
+                    },
+                  ],
+                },
+                default: {
+                  title,
+                  subject: title,
+                  message,
+                  url,
+                },
+              });
+              //@ts-ignore
+              Share.open(options);
+            }}
+            style={{
+              flexDirection: 'row',
+              width: 100,
+              justifyContent: 'space-around',
+              marginTop: 10,
+            }}>
+            <Icon
+              as={<Icon2 name="share" />}
+              size={5}
+              ml="2"
+              color="muted.400"
+            />
+            <Text style={{fontWeight: 'bold'}}>Share</Text>
+          </TouchableOpacity>
           <VStack maxWidth="90%">
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:to')}:</Text>
