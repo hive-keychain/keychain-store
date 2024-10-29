@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+  	<string>$(PRODUCT_NAME) wants to save photos</string>
 	<key>CFBundleDisplayName</key>
 	<string>Keychain Store</string>
 	<key>CFBundleExecutable</key>

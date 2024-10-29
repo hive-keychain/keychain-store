@@ -17,9 +17,13 @@ import {
   VStack,
   WarningOutlineIcon,
 } from 'native-base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
-import {NativeSyntheticEvent, TextInputFocusEventData} from 'react-native';
+import {
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
+  View,
+} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import HiveQRCode from '../components/HiveQRCode';
 import ScreenLayout from '../components/ScreenLayout';
@@ -30,6 +34,11 @@ import {HiveUtils} from '../utils/hive';
 import {generateMemo} from '../utils/memo';
 
 export type HomeScreenProps = DrawerScreenProps<MainDrawerParamList, 'Home'>;
+type Quote = {
+  btc: number;
+  name: string;
+  symbol: string;
+};
 
 export default (props: HomeScreenProps) => {
   const {t} = useTranslation();
@@ -39,7 +48,9 @@ export default (props: HomeScreenProps) => {
     memo: '',
   });
   const [lock, setLock] = React.useState(false);
-  const [currency, setCurrency] = React.useState('HBD');
+  const [currency, setCurrency] = React.useState<string>();
+  const [quoteCurrency, setQuoteCurrency] = React.useState<string>();
+  const [quoteCurrencyList, setQuoteCurrencyList] = React.useState<Quote[]>([]);
   const [memo, setMemo] = React.useState('');
   const [errorValidation, setErrorValidation] = React.useState<string | null>(
     null,
@@ -53,18 +64,54 @@ export default (props: HomeScreenProps) => {
     setSetShowQR(false);
   };
 
-  React.useEffect(() => {
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    init(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const fetchQuote = async () => {
+    // fetch from coingecko simple api
+    const URL_HIVE_PRICE =
+      'https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=btc';
+    const URL_EXCHANGE_RATE = 'https://api.coingecko.com/api/v3/exchange_rates';
+    const data = await Promise.all([
+      fetch(URL_HIVE_PRICE),
+      fetch(URL_EXCHANGE_RATE),
+    ]);
+    const json = await Promise.all(data.map(e => e.json()));
+    const list = [
+      {btc: json[0].hive.btc, name: 'HIVE', symbol: 'HIVE'},
+      {btc: json[0].hive_dollar.btc, name: 'HBD', symbol: 'HBD'},
+    ];
+    interface Rates {
+      [key: string]: {
+        type: string;
+        value: number;
+        name: string;
+      };
+    }
+    const rates: Rates = json[1].rates;
+    for (let [key, value] of Object.entries(rates)) {
+      if (value.type === 'fiat') {
+        list.push({btc: 1 / value.value, name: value.name, symbol: key});
+      }
+    }
+    setQuoteCurrencyList(list);
+  };
+
   const init = async () => {
+    fetchQuote();
     setMemoPrefix(memoPrefix + generateMemo(12) + ' ');
-    const lastStoreName = await AsyncStorage.getItem(
-      AsyncStorageKey.LAST_STORE_NAME,
-    );
+    const [lastStoreName, lastQuoteCurrency, lastCurrency] =
+      await AsyncStorage.multiGet([
+        AsyncStorageKey.LAST_STORE_NAME,
+        AsyncStorageKey.LAST_QUOTE_CURRENCY,
+        AsyncStorageKey.LAST_CURRENCY,
+      ]);
+    setQuoteCurrency(lastQuoteCurrency[1] || 'HBD');
+    setCurrency(lastCurrency[1] || 'HBD');
+
     if (lastStoreName) {
-      setData({...formData, name: lastStoreName});
+      setData({...formData, name: lastStoreName[1] || ''});
       setLock(true);
     }
   };
@@ -139,6 +186,30 @@ export default (props: HomeScreenProps) => {
     setMemo(value);
   };
 
+  const getQuotedAmount = () => {
+    if (currency && formData.amount && quoteCurrency) {
+      if (currency === quoteCurrency) {
+        return formData.amount;
+      } else {
+        const quote = quoteCurrencyList.find(
+          item => item.symbol === quoteCurrency,
+        );
+        const base = quoteCurrencyList.find(item => item.symbol === currency);
+        if (quote && base) {
+          return ((parseFloat(formData.amount) * quote.btc) / base.btc).toFixed(
+            3,
+          );
+        } else {
+          return '';
+        }
+      }
+    } else {
+      return '';
+    }
+  };
+
+  const quotedAmount = getQuotedAmount();
+
   return (
     <ScreenLayout>
       <VStack width="100%">
@@ -208,18 +279,61 @@ export default (props: HomeScreenProps) => {
                 <Select
                   //@ts-ignore
                   isReadOnly
+                  selectedValue={quoteCurrency}
+                  focusable={false}
+                  minWidth="50%"
+                  _selectedItem={{
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                  onValueChange={itemValue => {
+                    AsyncStorage.setItem(
+                      AsyncStorageKey.LAST_QUOTE_CURRENCY,
+                      itemValue,
+                    );
+                    setQuoteCurrency(itemValue);
+                  }}
+                  fontSize={'xs'}>
+                  {quoteCurrencyList.map(item => (
+                    <Select.Item label={item.name} value={item.symbol} />
+                  ))}
+                </Select>
+              </InputGroup>
+              <View style={{height: 10}} />
+              <InputGroup>
+                <Input
+                  minWidth="50%"
+                  isReadOnly
+                  focusable={false}
+                  value="Paid with"
+                />
+                <Select
+                  //@ts-ignore
+                  isReadOnly
                   selectedValue={currency}
                   focusable={false}
                   minWidth="50%"
                   _selectedItem={{
                     endIcon: <CheckIcon size="5" />,
                   }}
-                  onValueChange={itemValue => setCurrency(itemValue)}
-                  fontSize={'sm'}>
+                  onValueChange={itemValue => {
+                    AsyncStorage.setItem(
+                      AsyncStorageKey.LAST_CURRENCY,
+                      itemValue,
+                    );
+                    setCurrency(itemValue);
+                  }}
+                  fontSize={'xs'}>
                   <Select.Item label="HIVE" value="HIVE" />
                   <Select.Item label="HBD" value="HBD" />
                 </Select>
               </InputGroup>
+              <View style={{width: '100%', alignItems: 'flex-end'}}>
+                <Text alignItems="flex-end">
+                  {quotedAmount
+                    ? `= ${quotedAmount} ${currency?.toUpperCase()}`
+                    : ''}
+                </Text>
+              </View>
             </FormControl>
             <FormControl>
               <FormControl.Label
@@ -283,7 +397,10 @@ export default (props: HomeScreenProps) => {
               [
                 'transfer',
                 {
-                  amount: Number(formData.amount).toFixed(3) + ' ' + currency,
+                  amount:
+                    Number(quotedAmount).toFixed(3) +
+                    ' ' +
+                    currency!.toUpperCase(),
                   from: '',
                   to: formData.name,
                   memo: completeMemoPrefix + memo,

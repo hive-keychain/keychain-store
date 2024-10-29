@@ -64,7 +64,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
         const {uri, base64} = response;
         setQrCodeBase64(base64);
         setQrCodeImg(uri);
-        console.log('uri', uri);
         await AsyncStorageUtils.addInvoice({
           from: '',
           to: op?.[1].to!,
@@ -78,7 +77,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
         );
       })
       .catch((errorQR: any) => {
-        console.log(t('error:cannot_create_qr_code'), errorQR);
         setError(errorQR);
       });
   }, [op, ops, t]);
@@ -178,29 +176,6 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
                 ios: {
                   activityItemSources: [
                     {
-                      // For sharing url with custom title.
-                      placeholderItem: {type: 'url', content: url},
-                      item: {
-                        default: {type: 'url', content: url},
-                      },
-                      subject: {
-                        default: title,
-                      },
-                      linkMetadata: {originalUrl: url, url, title},
-                    },
-                    {
-                      // For sharing text.
-                      placeholderItem: {type: 'text', content: message},
-                      item: {
-                        default: {type: 'text', content: message},
-                        message: null, // Specify no text to share via Messages app.
-                      },
-                      linkMetadata: {
-                        // For showing app icon on share preview.
-                        title: message,
-                      },
-                    },
-                    {
                       // For using custom icon instead of default text icon at share preview when sharing with message.
                       placeholderItem: {
                         type: 'url',
@@ -209,7 +184,9 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
                       item: {
                         default: {
                           type: 'text',
-                          content: `${message} ${url}`,
+                          content: `${message} 
+                          
+${url}`,
                         },
                       },
                       linkMetadata: {
