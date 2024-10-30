@@ -243,7 +243,7 @@ export default (props: HomeScreenProps) => {
                   </Pressable>
                 }
                 autoCapitalize="none"
-                placeholder={t('common:my_awesome_shop_placeholder')}
+                placeholder={t('common:shop_username')}
                 isDisabled={lock}
                 onChangeText={value => setData({...formData, name: value})}
                 value={formData.name}
