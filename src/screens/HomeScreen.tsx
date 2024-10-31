@@ -90,8 +90,23 @@ export default (props: HomeScreenProps) => {
       };
     }
     const rates: Rates = json[1].rates;
-    for (let [key, value] of Object.entries(rates)) {
-      if (value.type === 'fiat') {
+    for (let [key, value] of Object.entries(rates).sort((a, b) => {
+      // if name is euro or us dollar, put it first
+      if (a[1].name === 'Euro' || a[1].name === 'US Dollar') {
+        return -1;
+      }
+      if (b[1].name === 'Euro' || b[1].name === 'US Dollar') {
+        return 1;
+      }
+      if (a[1].name < b[1].name) {
+        return -1;
+      }
+      if (a[1].name > b[1].name) {
+        return 1;
+      }
+      return 0;
+    })) {
+      if (value.type === 'fiat' && key !== 'vef') {
         list.push({btc: 1 / value.value, name: value.name, symbol: key});
       }
     }
