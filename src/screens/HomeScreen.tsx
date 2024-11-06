@@ -76,12 +76,35 @@ export default (props: HomeScreenProps) => {
     const data = await Promise.all([
       fetch(URL_HIVE_PRICE),
       fetch(URL_EXCHANGE_RATE),
+      HiveUtils.getHBDPrice(),
     ]);
-    const json = await Promise.all(data.map(e => e.json()));
+    const json = await Promise.all([
+      ...data.map(e => (typeof e !== 'number' ? e.json() : e)),
+    ]);
     const list = [
       {btc: json[0].hive.btc, name: 'HIVE', symbol: 'HIVE'},
-      {btc: json[0].hive_dollar.btc, name: 'HBD', symbol: 'HBD'},
+      {btc: json[0].hive.btc / json[2], name: 'HBD', symbol: 'HBD'},
     ];
+
+    // console.log(
+    //   '1 HIVE =' +
+    //     json[0].hive.btc +
+    //     ' BTC' +
+    //     '- 1 BTC=' +
+    //     1 / json[0].hive.btc +
+    //     ' HIVE',
+    // );
+    // console.log(
+    //   '1 HBD = ' + 1 / json[2] + 'HIVE' + '- 1 HIVE=' + json[2] + ' HBD',
+    // );
+    // console.log(
+    //   '1 HBD = ' +
+    //     json[0].hive.btc / json[2] +
+    //     'BTC - 1 BTC=' +
+    //     json[2] / json[0].hive.btc +
+    //     'HBD',
+    // );
+
     interface Rates {
       [key: string]: {
         type: string;
@@ -92,6 +115,13 @@ export default (props: HomeScreenProps) => {
     const rates: Rates = json[1].rates;
     for (let [key, value] of Object.entries(rates).sort((a, b) => {
       // if name is euro or us dollar, put it first
+      // if (a[1].name === 'US Dollar') {
+      //   // console.log('1 USD = ' + 1 / a[1].value + 'BTC');
+      //   // console.log('1 HIVE = ' + json[0].hive.btc * a[1].value + 'USD');
+      //   // console.log(
+      //   //   '1 HBD = ' + (json[0].hive.btc * a[1].value) / json[2] + 'USD',
+      //   // );
+      // }
       if (a[1].name === 'Euro' || a[1].name === 'US Dollar') {
         return -1;
       }
@@ -110,6 +140,7 @@ export default (props: HomeScreenProps) => {
         list.push({btc: 1 / value.value, name: value.name, symbol: key});
       }
     }
+
     setQuoteCurrencyList(list);
   };
 
@@ -296,6 +327,7 @@ export default (props: HomeScreenProps) => {
                   isReadOnly
                   selectedValue={quoteCurrency}
                   focusable={false}
+                  placeholder="Loading..."
                   minWidth="50%"
                   _selectedItem={{
                     endIcon: <CheckIcon size="5" />,

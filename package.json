@@ -1,6 +1,6 @@
 {
   "name": "keychainStore",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,7 +11,9 @@
     "test": "jest",
     "android-clean": "cd android && ./gradlew clean && cd ..",
     "dep-clean": "rm -rf node_modules && npm install --legacy-peer-deps",
-    "clean": "watchman watch-del-all &&npm run dep-clean && npm run android-clean && npm run start -- --reset-cache"
+    "clean": "watchman watch-del-all &&npm run dep-clean && npm run android-clean && npm run start -- --reset-cache",
+    "bump": "npx react-native bump-version --type patch",
+    "bump:minor": "npx react-native bump-version --type minor"
   },
   "dependencies": {
     "@hiveio/dhive": "^1.2.7",

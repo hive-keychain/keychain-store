@@ -41,8 +41,14 @@ const checkIfUserExists = async (username: string) => {
   return false;
 };
 
+const getHBDPrice = async () => {
+  const price = await getClient().database.getCurrentMedianHistoryPrice();
+  return price.base.amount;
+};
+
 export const HiveUtils = {
   getClient,
   getLastTransactionsOnUser,
   checkIfUserExists,
+  getHBDPrice,
 };
