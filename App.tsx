@@ -3,10 +3,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
+import {StyleSheet} from 'react-native';
 import 'react-native-gesture-handler';
 import InvoiceSuccess from './src/components/InvoiceSuccess';
 import Loader from './src/components/Loader';
 import ScreenLayout from './src/components/ScreenLayout';
+import {COLORS} from './src/constants/colors';
 import DrawerContent from './src/drawer/Content';
 import HomeScreen from './src/screens/HomeScreen';
 import HistoryInvoices from './src/screens/history-invoices/HistoryInvoices';
@@ -30,6 +32,9 @@ function App(): JSX.Element {
       {!loadingApp ? (
         <NavigationContainer>
           <Drawer.Navigator
+            screenOptions={{
+              drawerStyle: styles.drawer,
+            }}
             drawerContent={props => <DrawerContent {...props} />}>
             <Drawer.Screen
               name="Home"
@@ -66,5 +71,17 @@ function App(): JSX.Element {
     </NativeBaseProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  drawer: {
+    backgroundColor: COLORS.menuHamburguerBg,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    width: '70%',
+    height: '96%',
+    bottom: '2%',
+    top: undefined,
+  },
+});
 
 export default App;

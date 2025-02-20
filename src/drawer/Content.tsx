@@ -12,10 +12,12 @@ type Props = DrawerContentComponentProps;
 
 export default (props: Props) => {
   return (
-    <DrawerContentScrollView contentContainerStyle={style.container} {...props}>
+    <DrawerContentScrollView
+      contentContainerStyle={styles.container}
+      {...props}>
       <ScrollView
-        style={style.container}
-        contentContainerStyle={style.containerSpaced}>
+        style={styles.container}
+        contentContainerStyle={styles.containerSpaced}>
         <View>
           <HStack px={2} alignItems={'center'}>
             <Image
@@ -39,7 +41,7 @@ export default (props: Props) => {
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     height: '100%',
     flex: 1,
