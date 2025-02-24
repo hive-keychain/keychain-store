@@ -7,4 +7,5 @@
   },
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "git.ignoreLimitWarning": true,
+  "java.configuration.updateBuildConfiguration": "disabled"
 }

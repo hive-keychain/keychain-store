@@ -1,5 +1,5 @@
 import {Box, Text} from 'native-base';
-import React from 'react';
+import React, {JSX} from 'react';
 
 interface Props {
   titleLayout?: string;

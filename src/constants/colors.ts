@@ -3,4 +3,5 @@ export const COLORS = {
   background: '#E5EDF5',
   menuHamburguerBg: '#FFF',
   cardBorderColorContrast: '#EAEAEA',
+  red: '#E31337',
 };

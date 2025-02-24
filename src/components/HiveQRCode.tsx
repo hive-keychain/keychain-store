@@ -4,8 +4,8 @@ import moment from 'moment';
 import {Button, HStack, Icon, Image, Link, Text, VStack} from 'native-base';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {Platform} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Platform, StyleSheet} from 'react-native';
+import {Pressable} from 'react-native-gesture-handler';
 import Share from 'react-native-share';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import RNQRGenerator from 'rn-qr-generator';
@@ -35,7 +35,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   const [qrCodeBase64, setQrCodeBase64] = React.useState<string | undefined>();
   const [confirmed, setConfirmed] = React.useState(false);
   const [countDown, setCountdown] = React.useState(5);
-  const [timer, setTimer] = React.useState<NodeJS.Timer | null>(null);
+  const [timer, setTimer] = React.useState<NodeJS.Timeout>();
   const [operation, setOperation] = React.useState<TransferOperation | null>(
     null,
   );
@@ -79,7 +79,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
       .catch((errorQR: any) => {
         setError(errorQR);
       });
-  }, [op, ops, t]);
+  }, [op, ops]);
 
   React.useEffect(() => {
     init();
@@ -94,7 +94,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
   const resetTimer = React.useCallback(() => {
     if (timer) {
       clearInterval(timer);
-      setTimer(null);
+      setTimer(undefined);
     }
   }, [setTimer, timer]);
 
@@ -163,7 +163,7 @@ const HiveQRCode = ({ops, op, goBack, ...props}: Props) => {
             size={'2xl'}
             resizeMethod="auto"
           />
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               const message = `@${operation[1].to} sent you a ${operation[1].amount} invoice. Follow this link to pay in Keychain:`;
               const url = encodedOp.replace(
@@ -206,20 +206,15 @@ ${url}`,
               //@ts-ignore
               Share.open(options);
             }}
-            style={{
-              flexDirection: 'row',
-              width: 100,
-              justifyContent: 'space-around',
-              marginTop: 10,
-            }}>
+            style={styles.touchable}>
             <Icon
               as={<Icon2 name="share" />}
               size={5}
               ml="2"
               color="muted.400"
             />
-            <Text style={{fontWeight: 'bold'}}>Share</Text>
-          </TouchableOpacity>
+            <Text style={styles.bold}>Share</Text>
+          </Pressable>
           <VStack maxWidth="90%">
             <HStack justifyContent={'space-between'}>
               <Text fontWeight={'bold'}>{t('common:to')}:</Text>
@@ -268,5 +263,15 @@ ${url}`,
     </VStack>
   );
 };
+
+const styles = StyleSheet.create({
+  touchable: {
+    flexDirection: 'row',
+    width: 100,
+    justifyContent: 'space-around',
+    marginTop: 10,
+  },
+  bold: {fontWeight: 'bold'},
+});
 
 export default HiveQRCode;

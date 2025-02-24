@@ -3,7 +3,6 @@ import {
   ArrowUpIcon,
   Box,
   Center,
-  FlatList,
   FormControl,
   HStack,
   Icon,
@@ -11,9 +10,14 @@ import {
   Link,
   Text,
 } from 'native-base';
-import React from 'react';
+import React, {useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+} from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Loader from '../../components/Loader';
 import ScreenLayout from '../../components/ScreenLayout';
@@ -34,7 +38,7 @@ export default ({navigation}: Props) => {
   const [filteredInvoiceHistoryList, setFilteredInvoiceHistoryList] =
     React.useState<InvoiceData[]>([]);
   const [searchQuery, setSearchQuery] = React.useState<string>('');
-  const flatListRef = React.useRef(null);
+  const flatListRef = useRef(null);
 
   React.useEffect(() => {
     init();
@@ -130,7 +134,7 @@ export default ({navigation}: Props) => {
             />
           </FormControl>
           <FlatList
-            mt={10}
+            style={styles.flatList}
             ref={flatListRef}
             data={filteredInvoiceHistoryList}
             renderItem={data => (
@@ -140,7 +144,6 @@ export default ({navigation}: Props) => {
                 reloadParent={() => setReload(!reload)}
               />
             )}
-            width={'90%'}
             onScrollEndDrag={handleDragScroll}
           />
           {showScrollToTop && (
@@ -157,3 +160,5 @@ export default ({navigation}: Props) => {
     </ScreenLayout>
   );
 };
+
+const styles = StyleSheet.create({flatList: {marginTop: 10, width: '90%'}});

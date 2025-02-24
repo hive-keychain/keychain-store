@@ -21,6 +21,7 @@ import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   NativeSyntheticEvent,
+  StyleSheet,
   TextInputFocusEventData,
   View,
 } from 'react-native';
@@ -198,12 +199,12 @@ export default (props: HomeScreenProps) => {
   const handlerSubmitData = async (
     name: string,
     amount: string,
-    memo: string,
+    memoString: string,
   ) => {
     if (
       name.trim().length === 0 ||
       amount.trim().length === 0 ||
-      (completeMemoPrefix + memo).trim().length === 0 ||
+      (completeMemoPrefix + memoString).trim().length === 0 ||
       !userExist
     ) {
       setErrorValidation(t('error:missing_fields'));
@@ -345,7 +346,7 @@ export default (props: HomeScreenProps) => {
                   ))}
                 </Select>
               </InputGroup>
-              <View style={{height: 10}} />
+              <View style={styles.paidWith} />
               <InputGroup>
                 <Input
                   minWidth="50%"
@@ -374,7 +375,7 @@ export default (props: HomeScreenProps) => {
                   <Select.Item label="HBD" value="HBD" />
                 </Select>
               </InputGroup>
-              <View style={{width: '100%', alignItems: 'flex-end'}}>
+              <View style={styles.quote}>
                 <Text alignItems="flex-end">
                   {quotedAmount
                     ? `= ${quotedAmount} ${currency?.toUpperCase()}`
@@ -462,3 +463,8 @@ export default (props: HomeScreenProps) => {
     </ScreenLayout>
   );
 };
+
+const styles = StyleSheet.create({
+  quote: {width: '100%', alignItems: 'flex-end'},
+  paidWith: {height: 10},
+});

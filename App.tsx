@@ -1,7 +1,7 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
-import React from 'react';
+import React, {JSX} from 'react';
 import {useTranslation} from 'react-i18next';
 import {StyleSheet} from 'react-native';
 import 'react-native-gesture-handler';
@@ -34,6 +34,7 @@ function App(): JSX.Element {
           <Drawer.Navigator
             screenOptions={{
               drawerStyle: styles.drawer,
+              drawerActiveBackgroundColor: COLORS.red,
             }}
             drawerContent={props => <DrawerContent {...props} />}>
             <Drawer.Screen
@@ -48,7 +49,7 @@ function App(): JSX.Element {
               component={HistoryInvoices}
               options={{
                 title: t('navigation:historyTitle'),
-                unmountOnBlur: true,
+                popToTopOnBlur: true,
               }}
             />
 
