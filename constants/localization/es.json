@@ -1,0 +1,53 @@
+{
+  "common": {
+    "new_invoice": "Nueva Factura",
+    "shop_username": "Tienda",
+    "my_awesome_shop_placeholder": "Descripción",
+    "amount": "Monto",
+    "amount_placeholder": "1.000",
+    "memo": "Memo",
+    "submit": "Enviar",
+    "generating": "Generando...",
+    "scan_qr_code": "Escanee este código QR",
+    "to": "Destinatario",
+    "checking_confirmation": "Verificando confirmación en {{countDown}} segundos",
+    "cancel_invoice": "Cancelar factura",
+    "alert_cancel_title": "Desea usted cancelarlo?",
+    "alert_cancel_body": "La factura seguirá visible en la pantalla Historial como no confirmada. Si lo desea, puede restablecerla más adelante.",
+    "proceed": "Proceder",
+    "cancel": "Cancelar",
+    "payment_success": "Pago exitoso!",
+    "confirmed": "Confirmado",
+    "from": "Envía",
+    "created": "Creado",
+    "no_records_found": "No se encontraron registros.",
+    "search_box_placeholder": "Ingrese filtros",
+    "unconfirmed": "No confirmado",
+    "store": "Tienda",
+    "try_again": "Reintentar",
+    "delete": "Borrar",
+    "filter": "Filtro",
+    "paid_with": "Pagado con"
+  },
+  "footer": {
+    "text": "Hecho con ❤ por Keychain Team"
+  },
+  "error": {
+    "missing_hive_user": "¡Nombre de usuario no encontrado en Hive!",
+    "missing_fields": "Faltan campos o no se ha encontrado la cuenta",
+    "cannot_create_qr_code": "No se puede crear código QR",
+    "read_invoice_memory": "¡No se puede leer la factura de la memoria, póngase en contacto con el servicio de asistencia!"
+  },
+  "navigation": {
+    "homeTitle": "Generador de facturas",
+    "historyTitle": "Historial de Facturas",
+    "invoiceSuccessTitle": "Confirmación de Pago",
+    "link_go_home": "Ir al inicio!",
+    "check_in_history": "Ir al Historial",
+    "next_invoice": "Siguiente Factura"
+  },
+  "language": {
+    "english": "English",
+    "spanish": "Español"
+  }
+}
