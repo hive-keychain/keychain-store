@@ -2,6 +2,7 @@
   "common": {
     "new_invoice": "Nueva Factura",
     "shop_username": "Tienda",
+    "share": "Compartir",
     "my_awesome_shop_placeholder": "Descripción",
     "amount": "Monto",
     "amount_placeholder": "1.000",
@@ -12,7 +13,7 @@
     "to": "Destinatario",
     "checking_confirmation": "Verificando confirmación en {{countDown}} segundos",
     "cancel_invoice": "Cancelar factura",
-    "alert_cancel_title": "Desea usted cancelarlo?",
+    "alert_cancel_title": "Desea cancelar esta factura?",
     "alert_cancel_body": "La factura seguirá visible en la pantalla Historial como no confirmada. Si lo desea, puede restablecerla más adelante.",
     "proceed": "Proceder",
     "cancel": "Cancelar",
@@ -41,7 +42,7 @@
   "navigation": {
     "homeTitle": "Generador de facturas",
     "historyTitle": "Historial de Facturas",
-    "invoiceSuccessTitle": "Confirmación de Pago",
+    "invoiceSuccessTitle": "Confirmación",
     "link_go_home": "Ir al inicio!",
     "check_in_history": "Ir al Historial",
     "next_invoice": "Siguiente Factura"

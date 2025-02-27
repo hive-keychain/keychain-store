@@ -1,7 +1,7 @@
 import ScreenLayout from "@/components/ScreenLayout";
 import { translate } from "@/utils/Localization.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { DrawerScreenProps } from "@react-navigation/drawer";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import moment from "moment";
 import {
   ArrowForwardIcon,
@@ -14,16 +14,27 @@ import {
   VStack,
 } from "native-base";
 import React from "react";
-import { MainDrawerParamList } from "./_layout";
 
-type Props = DrawerScreenProps<MainDrawerParamList, "InvoiceSuccess">;
+type Props = {};
 
-export default ({ navigation, route }: Props) => {
-  const { params } = route;
-
+export default ({}: Props) => {
+  const params = useLocalSearchParams();
+  const { createdAt, updatedAt, from, to, amount, memo } = JSON.parse(
+    params.confirmedOperation as string
+  );
+  const router = useRouter();
   return (
     <ScreenLayout>
-      <VStack minWidth="70%" maxWidth={"90%"} space={3}>
+      <VStack
+        width="100%"
+        mx={"30"}
+        padding={8}
+        alignSelf={"center"}
+        height="80%"
+        mt="10%"
+        h={"90%"}
+      >
+        {" "}
         <HStack
           space={"1"}
           alignItems={"center"}
@@ -33,40 +44,31 @@ export default ({ navigation, route }: Props) => {
           <CheckCircleIcon size="5" mt="0.5" color="emerald.500" />
           <Heading>{translate("common.payment_success")}</Heading>
         </HStack>
-
         {params && params.confirmedOperation && (
           <>
             <HStack justifyContent={"space-between"}>
               <Text fontWeight={"bold"}>{translate("common.confirmed")}:</Text>
-              <Text>
-                {moment
-                  .unix(Number(params.confirmedOperation.updatedAt))
-                  .format("lll")}
-              </Text>
+              <Text>{moment.unix(Number(updatedAt)).format("lll")}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
               <Text bold>{translate("common.from")}:</Text>
-              <Text>@{params.confirmedOperation.from}</Text>
+              <Text>@{from}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
               <Text bold>{translate("common.to")}:</Text>
-              <Text>@{params.confirmedOperation.to}</Text>
+              <Text>@{to}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
               <Text bold>{translate("common.amount")}:</Text>
-              <Text>{params.confirmedOperation.amount}</Text>
+              <Text>{amount}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
               <Text bold>{translate("common.memo")}:</Text>
-              <Text textAlign={"center"}>{params.confirmedOperation.memo}</Text>
+              <Text textAlign={"center"}>{memo}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
               <Text fontWeight={"bold"}>{translate("common.created")}:</Text>
-              <Text>
-                {moment
-                  .unix(Number(params.confirmedOperation.createdAt))
-                  .format("lll")}
-              </Text>
+              <Text>{moment.unix(Number(createdAt)).format("lll")}</Text>
             </HStack>
           </>
         )}
@@ -75,7 +77,9 @@ export default ({ navigation, route }: Props) => {
           marginTop={20}
           alignContent={"center"}
         >
-          <Link onPress={() => navigation.navigate("History")} mb={2}>
+          <Link
+            onPress={() => router.navigate({ pathname: "/HistoryInvoices" })}
+          >
             <Icon
               as={<MaterialIcons name="list" />}
               size={5}
@@ -84,7 +88,7 @@ export default ({ navigation, route }: Props) => {
             />
             {translate("navigation.check_in_history")}
           </Link>
-          <Link onPress={() => navigation.navigate("Home")}>
+          <Link onPress={() => router.navigate({ pathname: "/Home" })}>
             <ArrowForwardIcon size="5" mt="0.5" mr="0.5" color="emerald.500" />
             {translate("navigation.next_invoice")}
           </Link>

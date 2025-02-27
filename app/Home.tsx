@@ -1,21 +1,18 @@
 import HiveQRCode from "@/components/HiveQRCode";
 import ScreenLayout from "@/components/ScreenLayout";
+import { Colors } from "@/constants/Colors";
 import { memoPrefix } from "@/constants/Prefix";
 import { HiveUtils } from "@/utils/Hive.utils";
 import { translate } from "@/utils/Localization.utils";
 import { generateMemo } from "@/utils/Memo.utils";
 import { AsyncStorageKey } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { TransferOperation } from "@hiveio/dhive";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DrawerScreenProps } from "@react-navigation/drawer";
-import { SplashScreen, useLocalSearchParams } from "expo-router";
 import {
   Button,
   CheckIcon,
+  ChevronDownIcon,
   FormControl,
   HStack,
-  Heading,
   Icon,
   Input,
   InputGroup,
@@ -25,7 +22,11 @@ import {
   Text,
   VStack,
   WarningOutlineIcon,
-} from "native-base";
+} from "@gluestack-ui/themed-native-base";
+import { TransferOperation } from "@hiveio/dhive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { SplashScreen, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import {
   NativeSyntheticEvent,
@@ -56,19 +57,18 @@ export default (props: HomeScreenProps) => {
   const [errorValidation, setErrorValidation] = React.useState<string | null>(
     null
   );
-  const [showQR, setSetShowQR] = React.useState(false);
+  const [showQR, setShowQR] = React.useState(false);
   const [userExist, setUserExist] = React.useState(true);
   const [completeMemoPrefix, setMemoPrefix] = React.useState("");
 
   const local = useLocalSearchParams();
-
   const handleResetForm = () => {
     handleSetMemo("");
-    setSetShowQR(false);
+    setShowQR(false);
   };
 
   useEffect(() => {
-    init(); // eslint-disable-next-line react-hooks/exhaustive-deps
+    init();
   }, []);
 
   const fetchQuote = async () => {
@@ -132,6 +132,7 @@ export default (props: HomeScreenProps) => {
       ]);
     setQuoteCurrency(lastQuoteCurrency[1] || "HBD");
     setCurrency(lastCurrency[1] || "HBD");
+    setShowQR(false);
 
     if (lastStoreName) {
       setData({ ...formData, name: lastStoreName[1] || "" });
@@ -141,20 +142,15 @@ export default (props: HomeScreenProps) => {
 
   useEffect(() => {
     const reconfirmationParams: any = local;
+    console.log("onLocal");
 
-    if (
-      reconfirmationParams &&
-      reconfirmationParams.toConfirmOperation &&
-      reconfirmationParams.toConfirmOperation.memo
-    ) {
-      if (showQR) {
-        setSetShowQR(false);
-      }
+    if (reconfirmationParams && reconfirmationParams.toConfirmOperation) {
+      console.log("ici");
       const {
         store: reconfirmationStore,
         memo: reconfirmationMemo,
         amount: reconfirmationAmount,
-      } = reconfirmationParams.toConfirmOperation;
+      } = JSON.parse(reconfirmationParams.toConfirmOperation);
       const reconfirmationCurrency = reconfirmationAmount.split(" ")[1];
       setCurrency(reconfirmationCurrency);
       setData({
@@ -169,7 +165,7 @@ export default (props: HomeScreenProps) => {
         reconfirmationMemo
       );
     }
-  }, [local]);
+  }, [local.reconfirmationParams]);
 
   const handlerSubmitData = async (
     name: string,
@@ -182,7 +178,7 @@ export default (props: HomeScreenProps) => {
       (completeMemoPrefix + memoString).trim().length === 0 ||
       !userExist
     ) {
-      setErrorValidation(translate("error:missing_fields"));
+      setErrorValidation(translate("error.missing_fields"));
       setTimeout(() => {
         setErrorValidation(null);
       }, 3000);
@@ -191,13 +187,14 @@ export default (props: HomeScreenProps) => {
         AsyncStorageKey.LAST_STORE_NAME,
         formData.name
       );
-      setSetShowQR(true);
+      setShowQR(true);
     }
   };
 
   const handleOnBlurInput = async (
     _e: NativeSyntheticEvent<TextInputFocusEventData>
   ) => {
+    console.log("onblur");
     if (formData.name) {
       setUserExist(await HiveUtils.checkIfUserExists(formData.name));
     }
@@ -207,7 +204,6 @@ export default (props: HomeScreenProps) => {
     setData({ ...formData, memo: value });
     setMemo(value);
   };
-
   const getQuotedAmount = () => {
     if (currency && formData.amount && quoteCurrency) {
       if (currency === quoteCurrency) {
@@ -236,192 +232,227 @@ export default (props: HomeScreenProps) => {
     <ScreenLayout>
       <VStack width="100%">
         {!showQR && (
-          <VStack width="100%" maxW="300px" mx={"3"} alignSelf={"center"}>
-            <Heading bold>{translate("common.new_invoice")}</Heading>
-            <FormControl isRequired isInvalid={!userExist}>
-              <FormControl.Label
-                _text={{
-                  bold: true,
-                }}
-              >
-                {translate("common.shop_username")}
-              </FormControl.Label>
-              <Input
-                InputLeftElement={
-                  <Icon
-                    as={<MaterialIcons name="person" />}
-                    size={5}
-                    ml="2"
-                    color="muted.400"
-                  />
-                }
-                InputRightElement={
-                  <Pressable onPress={() => setLock(!lock)}>
+          <VStack
+            width="100%"
+            mx={"30"}
+            padding={8}
+            alignSelf={"center"}
+            height="80%"
+            mt="10%"
+            h={"90%"}
+          >
+            <View style={{ flex: 1, gap: 20, marginTop: "5%" }}>
+              <FormControl isRequired isInvalid={!userExist}>
+                <FormControl.Label
+                  _text={{
+                    bold: true,
+                  }}
+                >
+                  {translate("common.shop_username")}
+                </FormControl.Label>
+                <Input
+                  InputLeftElement={
                     <Icon
-                      as={
-                        <MaterialIcons
-                          name={lock ? "lock-outline" : "lock-open"}
-                        />
-                      }
+                      as={<MaterialIcons name="person" s />}
+                      tintColor={"red"}
                       size={5}
-                      mr="2"
-                      color="muted.400"
+                      ml="2"
+                      color={Colors.light.red}
                     />
-                  </Pressable>
-                }
-                autoCapitalize="none"
-                placeholder={translate("common.shop_username")}
-                isDisabled={lock}
-                onChangeText={(value) => setData({ ...formData, name: value })}
-                value={formData.name}
-                onBlur={handleOnBlurInput}
-                isReadOnly={lock}
-                fontSize={"sm"}
-              />
-
-              <FormControl.ErrorMessage
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                {translate("error:missing_hive_user")}
-              </FormControl.ErrorMessage>
-            </FormControl>
-            <FormControl isRequired>
-              <FormControl.Label
-                _text={{
-                  bold: true,
-                }}
-              >
-                {translate("common.amount")}
-              </FormControl.Label>
-              <InputGroup>
-                <Input
-                  keyboardType="decimal-pad"
-                  placeholder={translate("common.amount_placeholder")}
-                  width="50%"
-                  onChangeText={(value) =>
-                    setData({ ...formData, amount: value.replace(",", ".") })
                   }
-                  value={formData.amount}
-                  fontSize={"sm"}
-                  returnKeyType="done"
+                  InputRightElement={
+                    <Pressable onPress={() => setLock(!lock)}>
+                      <Icon
+                        as={
+                          <MaterialIcons
+                            name={lock ? "lock-outline" : "lock-open"}
+                          />
+                        }
+                        size={5}
+                        mr="2"
+                        color={Colors.light.red}
+                      />
+                    </Pressable>
+                  }
+                  autoCapitalize="none"
+                  placeholder={translate("common.shop_username")}
+                  isDisabled={lock}
+                  onChangeText={(value) =>
+                    setData({ ...formData, name: value })
+                  }
+                  value={formData.name}
+                  onBlur={handleOnBlurInput}
+                  isReadOnly={lock}
                 />
-                <Select
-                  //@ts-ignore
-                  isReadOnly
-                  selectedValue={quoteCurrency}
-                  focusable={false}
-                  placeholder="Loading..."
-                  minWidth="50%"
-                  _selectedItem={{
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  onValueChange={(itemValue) => {
-                    AsyncStorage.setItem(
-                      AsyncStorageKey.LAST_QUOTE_CURRENCY,
-                      itemValue
-                    );
-                    setQuoteCurrency(itemValue);
-                  }}
-                  fontSize={"xs"}
+
+                <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}
                 >
-                  {quoteCurrencyList.map((item) => (
-                    <Select.Item label={item.name} value={item.symbol} />
-                  ))}
-                </Select>
-              </InputGroup>
-              <View style={styles.paidWith} />
-              <InputGroup>
-                <Input
-                  minWidth="50%"
-                  isReadOnly
-                  focusable={false}
-                  value="Paid with"
-                />
-                <Select
-                  //@ts-ignore
-                  isReadOnly
-                  selectedValue={currency}
-                  focusable={false}
-                  minWidth="50%"
-                  _selectedItem={{
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  onValueChange={(itemValue) => {
-                    AsyncStorage.setItem(
-                      AsyncStorageKey.LAST_CURRENCY,
-                      itemValue
-                    );
-                    setCurrency(itemValue);
-                  }}
-                  fontSize={"xs"}
-                >
-                  <Select.Item label="HIVE" value="HIVE" />
-                  <Select.Item label="HBD" value="HBD" />
-                </Select>
-              </InputGroup>
-              <View style={styles.quote}>
-                <Text alignItems="flex-end">
-                  {quotedAmount
-                    ? `= ${quotedAmount} ${currency?.toUpperCase()}`
-                    : ""}
-                </Text>
-              </View>
-            </FormControl>
-            <FormControl>
-              <FormControl.Label
-                _text={{
-                  bold: true,
-                }}
-              >
-                {translate("common.memo")}
-              </FormControl.Label>
-              <Stack alignItems={"center"} w={"100%"}>
-                <InputGroup
-                  w={{
-                    base: "100%",
+                  {translate("error.missing_hive_user")}
+                </FormControl.ErrorMessage>
+              </FormControl>
+              <FormControl isRequired>
+                <FormControl.Label
+                  _text={{
+                    bold: true,
                   }}
                 >
+                  {translate("common.amount")}
+                </FormControl.Label>
+                <InputGroup>
                   <Input
-                    InputLeftElement={
-                      <HStack
-                        space={"1.5"}
-                        h={"100%"}
-                        alignItems={"center"}
-                        backgroundColor="red"
-                        mr={"0"}
-                        pr={"0"}
-                      >
-                        <Icon
-                          as={<MaterialIcons name="note" />}
-                          size={5}
-                          ml="2"
-                          color="muted.400"
-                        />
-                        <Text fontSize={"sm"} mr={"-2.5"}>
-                          {completeMemoPrefix}
-                        </Text>
-                      </HStack>
+                    keyboardType="decimal-pad"
+                    _input={{
+                      selectionColor: "grey.100",
+                      cursorColor: "grey.100",
+                      backgroundColor: "grey.100",
+                      tintColor: "grey.100",
+                    }}
+                    placeholder={translate("common.amount_placeholder")}
+                    width="50%"
+                    onChangeText={(value) =>
+                      setData({ ...formData, amount: value.replace(",", ".") })
                     }
-                    placeholder={translate(
-                      "common.my_awesome_shop_placeholder"
-                    )}
-                    value={memo}
-                    onChangeText={(value) => handleSetMemo(value)}
-                    w={"100%"}
-                    fontSize={"sm"}
+                    value={formData.amount}
+                    returnKeyType="done"
                   />
+                  <Select
+                    //@ts-ignore
+                    isReadOnly
+                    selectedValue={quoteCurrency}
+                    focusable={false}
+                    placeholder="Loading..."
+                    minWidth="50%"
+                    dropdownIcon={
+                      <ChevronDownIcon
+                        size="4"
+                        mr="3"
+                        color={Colors.light.red}
+                      />
+                    }
+                    _selectedItem={{
+                      endIcon: <CheckIcon size="5" />,
+                    }}
+                    onValueChange={(itemValue) => {
+                      AsyncStorage.setItem(
+                        AsyncStorageKey.LAST_QUOTE_CURRENCY,
+                        itemValue
+                      );
+                      setQuoteCurrency(itemValue);
+                    }}
+                    fontSize={"xs"}
+                  >
+                    {quoteCurrencyList.map((item) => (
+                      <Select.Item
+                        label={item.name}
+                        value={item.symbol}
+                        key={item.symbol}
+                      />
+                    ))}
+                  </Select>
                 </InputGroup>
-              </Stack>
-            </FormControl>
-            <Button
-              onPress={() => {
-                handlerSubmitData(formData.name, formData.amount, memo);
-              }}
-              mt="50"
-              colorScheme="cyan"
-            >
-              {translate("common.submit")}
-            </Button>
+                <View style={styles.paidWith} />
+                <InputGroup>
+                  <Input
+                    minWidth="50%"
+                    isReadOnly
+                    focusable={false}
+                    value={translate("common.paid_with")}
+                  />
+                  <Select
+                    //@ts-ignore
+                    isReadOnly
+                    selectedValue={currency}
+                    focusable={false}
+                    minWidth="50%"
+                    dropdownIcon={
+                      <ChevronDownIcon
+                        size="4"
+                        mr="3"
+                        color={Colors.light.red}
+                      />
+                    }
+                    _selectedItem={{
+                      endIcon: <CheckIcon size="5" />,
+                    }}
+                    onValueChange={(itemValue) => {
+                      AsyncStorage.setItem(
+                        AsyncStorageKey.LAST_CURRENCY,
+                        itemValue
+                      );
+                      setCurrency(itemValue);
+                    }}
+                    fontSize={"xs"}
+                  >
+                    <Select.Item label="HIVE" value="HIVE" />
+                    <Select.Item label="HBD" value="HBD" />
+                  </Select>
+                </InputGroup>
+                <View style={styles.quote}>
+                  <Text alignItems="flex-end">
+                    {quotedAmount
+                      ? `= ${quotedAmount} ${currency?.toUpperCase()}`
+                      : ""}
+                  </Text>
+                </View>
+              </FormControl>
+              <FormControl>
+                <FormControl.Label
+                  _text={{
+                    bold: true,
+                  }}
+                >
+                  {translate("common.memo")}
+                </FormControl.Label>
+                <Stack alignItems={"center"} w={"100%"}>
+                  <InputGroup
+                    w={{
+                      base: "100%",
+                    }}
+                  >
+                    <Input
+                      InputLeftElement={
+                        <HStack
+                          space={"1.5"}
+                          h={"100%"}
+                          alignItems={"center"}
+                          backgroundColor="red"
+                          mr={"0"}
+                          pr={"0"}
+                        >
+                          <Icon
+                            as={<MaterialIcons name="note" />}
+                            size={5}
+                            ml="2"
+                            color={Colors.light.red}
+                          />
+                          <Text fontSize={"sm"} mr={"-2.5"}>
+                            {completeMemoPrefix}
+                          </Text>
+                        </HStack>
+                      }
+                      placeholder={translate(
+                        "common.my_awesome_shop_placeholder"
+                      )}
+                      value={memo}
+                      onChangeText={(value) => handleSetMemo(value)}
+                      w={"100%"}
+                      fontSize={"sm"}
+                    />
+                  </InputGroup>
+                </Stack>
+              </FormControl>
+              <View style={{ flex: 1 }} />
+              <Button
+                onPress={() => {
+                  handlerSubmitData(formData.name, formData.amount, memo);
+                }}
+                mt="50"
+              >
+                {translate("common.submit")}
+              </Button>
+            </View>
+
             {errorValidation && (
               <VStack mt={4} alignItems={"center"}>
                 <Text>{errorValidation}</Text>

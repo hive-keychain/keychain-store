@@ -4,6 +4,7 @@ import { AsyncStorageUtils, InvoiceData } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import moment from "moment";
 import {
   Badge,
@@ -16,7 +17,6 @@ import {
   VStack,
 } from "native-base";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import Avatar from "./Avatar";
 
 interface Props {
@@ -25,16 +25,18 @@ interface Props {
 }
 
 export default ({ item, reloadParent }: Props) => {
-  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = React.useState(false);
   const navigation = useNavigation<DrawerNavigationProp<MainDrawerParamList>>();
-
+  const router = useRouter();
   const gotoHome = () => {
-    navigation.navigate("Home", {
-      toConfirmOperation: {
-        store: item.to,
-        memo: item.memo.replace("kcs-", ""),
-        amount: item.amount,
+    router.navigate({
+      pathname: "/Home",
+      params: {
+        toConfirmOperation: JSON.stringify({
+          store: item.to,
+          memo: item.memo.replace("kcs-", ""),
+          amount: item.amount,
+        }),
       },
     });
   };

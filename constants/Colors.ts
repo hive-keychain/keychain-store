@@ -14,6 +14,8 @@ export const Colors = {
     menuHamburguerBg: "#FFF",
     cardBorderColorContrast: "#EAEAEA",
     red: "#E31337",
+    red100: "#E3133755",
+    primaryBackground: "#E5EDF5",
   },
   dark: {
     text: "#ECEDEE",

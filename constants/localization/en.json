@@ -1,19 +1,20 @@
 {
   "common": {
     "new_invoice": "New Invoice",
+    "share": "Share",
     "shop_username": "Shop Username",
-    "my_awesome_shop_placeholder": "Invoice description",
+    "my_awesome_shop_placeholder": "Description",
     "amount": "Amount",
     "amount_placeholder": "1.000",
     "memo": "Memo",
     "submit": "Submit",
     "generating": "Generating...",
-    "scan_qr_code": "Scan this QR Code",
+    "scan_qr_code": "Please scan this QR Code",
     "to": "To",
     "checking_confirmation": "Checking for confirmation in {{countDown}} seconds",
     "cancel_invoice": "Cancel Invoice",
-    "alert_cancel_title": "Do you want to cancel it?",
-    "alert_cancel_body": "The invoice will still be visible in the History screen as not confirmed. You can restore it later on if you want.",
+    "alert_cancel_title": "Do you want to cancel this invoice?",
+    "alert_cancel_body": "The invoice will still be visible in the History screen as not confirmed. You can restore it later on if needed.",
     "proceed": "Proceed",
     "cancel": "Cancel",
     "payment_success": "Payment successful!",
@@ -45,7 +46,7 @@
   "navigation": {
     "homeTitle": "Invoice Generator",
     "historyTitle": "Invoice History",
-    "invoiceSuccessTitle": "Payment confirmation",
+    "invoiceSuccessTitle": "Confirmation",
     "link_go_home": "Go home!",
     "check_in_history": "Check in History",
     "next_invoice": "Next invoice"

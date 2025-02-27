@@ -102,6 +102,3 @@ const styles = StyleSheet.create({
     bottom: 4,
   },
 });
-function useTranslation(): { t: any } {
-  throw new Error("Function not implemented.");
-}

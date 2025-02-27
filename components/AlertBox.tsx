@@ -1,5 +1,7 @@
-import {AlertDialog, Button, Center} from 'native-base';
-import React from 'react';
+import { Colors } from "@/constants/Colors";
+import { translate } from "@/utils/Localization.utils";
+import { AlertDialog, Button, Center } from "native-base";
+import React from "react";
 
 interface Props {
   alertHeader: string;
@@ -43,7 +45,8 @@ const AlertBox = ({
       <AlertDialog
         leastDestructiveRef={cancelRef}
         isOpen={isOpen}
-        onClose={onCancel}>
+        onClose={onCancel}
+      >
         <AlertDialog.Content>
           <AlertDialog.CloseButton />
           <AlertDialog.Header>{alertHeader}</AlertDialog.Header>
@@ -51,14 +54,19 @@ const AlertBox = ({
           <AlertDialog.Footer>
             <Button.Group space={2}>
               <Button
-                variant="unstyled"
-                colorScheme="coolGray"
                 onPress={onCancel}
-                ref={cancelRef}>
-                {buttonCancelTitle ?? 'Cancel'}
+                ref={cancelRef}
+                backgroundColor={Colors.light.textInverse}
+                borderWidth={1}
+                borderColor={Colors.light.text}
+                _text={{
+                  color: Colors.light.text,
+                }}
+              >
+                {buttonCancelTitle ?? translate("common.cancel")}
               </Button>
-              <Button colorScheme="danger" onPress={onProceed}>
-                {buttonProceedTitle ?? 'Proceed'}
+              <Button onPress={onProceed}>
+                {buttonProceedTitle ?? translate("common.proceed")}
               </Button>
             </Button.Group>
           </AlertDialog.Footer>

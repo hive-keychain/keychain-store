@@ -8,19 +8,44 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { Drawer } from "expo-router/drawer";
-import * as SplashScreen from "expo-splash-screen";
-import { NativeBaseProvider } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-
+  const customTheme = extendTheme({
+    components: {
+      Input: {
+        defaultProps: {
+          _input: {
+            fontSize: "sm",
+          },
+          _focus: {
+            backgroundColor: "transparent",
+            focusOutlineColor: Colors.light.red100,
+            borderWidth: 1,
+          },
+        },
+      },
+      Button: {
+        defaultProps: {
+          backgroundColor: Colors.light.red,
+          borderRadius: 20,
+          _text: {
+            color: Colors.light.textInverse,
+            fontSize: "sm",
+          },
+        },
+      },
+      Text: {
+        fontSize: "xs",
+      },
+    },
+  });
   return (
-    <NativeBaseProvider>
+    <NativeBaseProvider theme={customTheme}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Drawer
@@ -38,7 +63,7 @@ export default function RootLayout() {
             <Drawer.Screen
               name="Home"
               options={{
-                title: translate("navigation.homeTitle"),
+                title: translate("common.new_invoice"),
                 popToTopOnBlur: true,
               }}
             />

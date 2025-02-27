@@ -1,16 +1,18 @@
 import { HomeScreenProps } from "@/app/Home";
 import logo from "@/assets/images/ic_launcher.png";
+import { Colors } from "@/constants/Colors";
 import { HiveUtils } from "@/utils/Hive.utils";
 import { translate } from "@/utils/Localization.utils";
 import { AsyncStorageUtils } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Operation, TransferOperation } from "@hiveio/dhive";
+import { useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { encodeOp, encodeOps } from "hive-uri";
 import moment from "moment";
-import { Button, HStack, Icon, Link, Text, VStack } from "native-base";
+import { Button, Heading, HStack, Icon, Link, Text, VStack } from "native-base";
 import React from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import AlertBox from "./AlertBox";
@@ -40,7 +42,7 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
   const [showAlertBox, setShowAlertBox] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
   const [encodedOp, setEncodedOp] = React.useState<any>(null);
-
+  const router = useRouter();
   const init = React.useCallback(() => {
     let value;
     if (ops) {
@@ -51,17 +53,6 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
       setEncodedOp(value);
       setOperation(op as TransferOperation);
     }
-    // RNQRGenerator.generate({
-    //   value: value!,
-    //   height: 500,
-    //   width: 500,
-    //   correctionLevel: "H",
-    //   base64: true,
-    // })
-    //   .then(async (response) => {
-    //     const { uri, base64 } = response;
-    //     setQrCodeBase64(base64);
-    //     setQrCodeImg(uri);
     AsyncStorageUtils.addInvoice({
       from: "",
       to: op?.[1].to!,
@@ -73,10 +64,6 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
     setTimer(
       setInterval(() => setCountdown((prevCount) => prevCount - 1), 1000)
     );
-    // })
-    // .catch((errorQR: any) => {
-    //   setError(errorQR);
-    // });
   }, [op, ops]);
 
   React.useEffect(() => {
@@ -86,7 +73,6 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
         clearInterval(timer);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const resetTimer = React.useCallback(() => {
@@ -108,23 +94,18 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
       await AsyncStorageUtils.updateInvoice(memo, found.from, true);
       const confirmedInvoice = await AsyncStorageUtils.getInvoice(memo);
       if (confirmedInvoice) {
-        props.navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: "InvoiceSuccess",
-              params: {
-                confirmedOperation: {
-                  from: confirmedInvoice.from,
-                  to: confirmedInvoice.to,
-                  amount: confirmedInvoice.amount,
-                  memo: confirmedInvoice.memo,
-                  updatedAt: confirmedInvoice.updatedAt,
-                  createdAt: confirmedInvoice.createdAt,
-                },
-              },
-            },
-          ],
+        router.push({
+          pathname: "/InvoiceSuccess",
+          params: {
+            confirmedOperation: JSON.stringify({
+              from: confirmedInvoice.from,
+              to: confirmedInvoice.to,
+              amount: confirmedInvoice.amount,
+              memo: confirmedInvoice.memo,
+              updatedAt: confirmedInvoice.updatedAt,
+              createdAt: confirmedInvoice.createdAt,
+            }),
+          },
         });
       } else {
         setError(new Error(translate("error.read_invoice_memory")));
@@ -146,16 +127,17 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
   };
 
   return (
-    <VStack width={"100%"} maxW="350px" alignSelf={"center"}>
-      {operation && !confirmed && operation && (
+    <VStack width={"100%"} padding={5} alignSelf={"center"}>
+      {encodedOp && !confirmed && operation && (
         <VStack space={1} alignItems={"center"}>
-          <Text fontSize={25} fontWeight={"bold"}>
+          <Heading fontSize="xl" mb={30}>
             {translate("common.scan_qr_code")}
-          </Text>
+          </Heading>
           <QRCode
-            value="Just some string value"
+            value={encodedOp}
             logo={logo}
             logoSize={30}
+            size={200}
             logoBackgroundColor="transparent"
           />
           <Pressable
@@ -205,39 +187,51 @@ ${url}`,
           >
             <Icon
               as={<MaterialIcons name="share" />}
-              size={5}
+              size={4}
               ml="2"
-              color="muted.400"
+              mt="2"
+              color="black"
             />
-            <Text style={styles.bold}>Share</Text>
+            <Text fontSize={"xl"} style={styles.bold}>
+              {translate("common.share")}
+            </Text>
           </Pressable>
-          <VStack maxWidth="90%">
-            <HStack justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}>{translate("common.to")}:</Text>
-              <Text>@{operation[1].to}</Text>
+          <VStack maxWidth="90%" mt={5}>
+            <HStack style={styles.info} justifyContent={"space-between"}>
+              <Text fontSize="md" fontWeight={"bold"}>
+                {translate("common.to")}:
+              </Text>
+              <Text fontSize="md">@{operation[1].to}</Text>
+            </HStack>
+            <HStack style={styles.info} justifyContent={"space-between"}>
+              <Text fontSize="md" fontWeight={"bold"}>
+                {translate("common.amount")}:
+              </Text>
+              <Text fontSize="md">{operation[1].amount as string}</Text>
             </HStack>
             <HStack justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}>{translate("common.amount")}:</Text>
-              <Text>{operation[1].amount as string}</Text>
+              <Text fontSize="md" fontWeight={"bold"}>
+                {translate("common.memo")}:
+              </Text>
+              <Text fontSize="md">{operation[1].memo}</Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}>{translate("common.memo")}:</Text>
-              <Text>{operation[1].memo}</Text>
-            </HStack>
-            <Text mt={15} textAlign={"center"}>
+            <Text fontSize="md" mt={30} textAlign={"center"}>
               {translate("common.checking_confirmation", {
                 countDown: countDown.toString(),
               })}
             </Text>
           </VStack>
-          <HStack space={2} mt={30}>
+          <View style={{ marginTop: 30, width: "100%" }}>
             <Button
               onPress={() => setShowAlertBox(true)}
-              colorScheme={"danger"}
+              backgroundColor={Colors.light.textInverse}
+              _text={{
+                color: Colors.light.text,
+              }}
             >
               {translate("common.cancel_invoice")}
             </Button>
-          </HStack>
+          </View>
           <AlertBox
             show={showAlertBox}
             alertHeader={translate("common.alert_cancel_title")}
@@ -271,6 +265,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   bold: { fontWeight: "bold" },
+  info: {
+    marginBottom: 10,
+    borderBottomColor: Colors.light.text,
+    borderBottomWidth: 1,
+    paddingBottom: 10,
+  },
 });
 
 export default HiveQRCode;
