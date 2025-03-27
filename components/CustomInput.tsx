@@ -113,9 +113,6 @@ const getDimensionedStyles = ({
 }) =>
   StyleSheet.create({
     container: {
-      marginLeft: 0.05 * width,
-      marginRight: 0.05 * width,
-      width: 0.9 * width,
       backgroundColor: backgroundColor || "#000000",
       borderRadius: 25,
       height: 40,
