@@ -73,6 +73,7 @@ export default (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
+    paddingBottom: 0,
     flex: 1,
   },
   containerSpaced: {
