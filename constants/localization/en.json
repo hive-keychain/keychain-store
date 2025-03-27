@@ -28,7 +28,8 @@
     "try_again": "Try again",
     "delete": "Delete",
     "filter": "Filter",
-    "paid_with": "Paid with"
+    "paid_with": "Payment method",
+    "currency":"Choose a currency"
   },
   "error": {
     "missing_hive_user": "This username was not found!",

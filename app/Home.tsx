@@ -1,4 +1,6 @@
+import DropdownModal from "@/components/DropdownModal";
 import HiveQRCode from "@/components/HiveQRCode";
+import OperationInput from "@/components/OperationInput";
 import ScreenLayout from "@/components/ScreenLayout";
 import { Colors } from "@/constants/Colors";
 import { memoPrefix } from "@/constants/Prefix";
@@ -7,26 +9,23 @@ import { translate } from "@/utils/Localization.utils";
 import { generateMemo } from "@/utils/Memo.utils";
 import { AsyncStorageKey } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {
-  Button,
-  CheckIcon,
-  ChevronDownIcon,
-  FormControl,
-  HStack,
-  Icon,
-  Input,
-  InputGroup,
-  Pressable,
-  Select,
-  Stack,
-  Text,
-  VStack,
-  WarningOutlineIcon,
-} from "@gluestack-ui/themed-native-base";
 import { TransferOperation } from "@hiveio/dhive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { SplashScreen, useLocalSearchParams } from "expo-router";
+import SimpleToast from "react-native-simple-toast";
+
+import {
+  Button,
+  FormControl,
+  HStack,
+  Icon,
+  Pressable,
+  Stack,
+  Text,
+  VStack,
+  WarningOutlineIcon,
+} from "native-base";
 import React, { useEffect } from "react";
 import {
   NativeSyntheticEvent,
@@ -39,27 +38,22 @@ import { MainDrawerParamList } from "./_layout";
 export type HomeScreenProps = DrawerScreenProps<MainDrawerParamList, "Home">;
 type Quote = {
   btc: number;
-  name: string;
-  symbol: string;
+  label: string;
+  value: string;
 };
 
 export default (props: HomeScreenProps) => {
-  const [formData, setData] = React.useState({
-    name: "",
-    amount: "",
-    memo: "",
-  });
+  const [name, setName] = React.useState("");
+  const [amount, setAmount] = React.useState("");
+  const [memo, setMemo] = React.useState("");
   const [lock, setLock] = React.useState(false);
   const [currency, setCurrency] = React.useState<string>();
   const [quoteCurrency, setQuoteCurrency] = React.useState<string>();
   const [quoteCurrencyList, setQuoteCurrencyList] = React.useState<Quote[]>([]);
-  const [memo, setMemo] = React.useState("");
-  const [errorValidation, setErrorValidation] = React.useState<string | null>(
-    null
-  );
   const [showQR, setShowQR] = React.useState(false);
   const [userExist, setUserExist] = React.useState(true);
   const [completeMemoPrefix, setMemoPrefix] = React.useState("");
+  const [quotedAmount, setQuotedAmount] = React.useState("");
 
   const local = useLocalSearchParams();
   const handleResetForm = () => {
@@ -85,8 +79,8 @@ export default (props: HomeScreenProps) => {
       ...data.map((e) => (typeof e !== "number" ? e.json() : e)),
     ]);
     const list = [
-      { btc: json[0].hive.btc, name: "HIVE", symbol: "HIVE" },
-      { btc: json[0].hive.btc / json[2], name: "HBD", symbol: "HBD" },
+      { btc: json[0].hive.btc, label: "HIVE", value: "HIVE" },
+      { btc: json[0].hive.btc / json[2], label: "HBD", value: "HBD" },
     ];
 
     interface Rates {
@@ -113,7 +107,7 @@ export default (props: HomeScreenProps) => {
       return 0;
     })) {
       if (value.type === "fiat" && key !== "vef") {
-        list.push({ btc: 1 / value.value, name: value.name, symbol: key });
+        list.push({ btc: 1 / value.value, label: value.name, value: key });
       }
     }
 
@@ -135,7 +129,7 @@ export default (props: HomeScreenProps) => {
     setShowQR(false);
 
     if (lastStoreName) {
-      setData({ ...formData, name: lastStoreName[1] || "" });
+      setName(lastStoreName[1] || "");
       setLock(true);
     }
   };
@@ -153,12 +147,9 @@ export default (props: HomeScreenProps) => {
       } = JSON.parse(reconfirmationParams.toConfirmOperation);
       const reconfirmationCurrency = reconfirmationAmount.split(" ")[1];
       setCurrency(reconfirmationCurrency);
-      setData({
-        name: reconfirmationStore,
-        memo: reconfirmationMemo,
-        amount: reconfirmationAmount.split(" ")[0],
-      });
+      setName(reconfirmationStore);
       setMemo(reconfirmationMemo);
+      setAmount(reconfirmationAmount.split(" ")[0]);
       handlerSubmitData(
         reconfirmationStore,
         reconfirmationAmount.split(" ")[0],
@@ -178,15 +169,9 @@ export default (props: HomeScreenProps) => {
       (completeMemoPrefix + memoString).trim().length === 0 ||
       !userExist
     ) {
-      setErrorValidation(translate("error.missing_fields"));
-      setTimeout(() => {
-        setErrorValidation(null);
-      }, 3000);
+      SimpleToast.show(translate("error.missing_fields"), SimpleToast.LONG);
     } else {
-      await AsyncStorage.setItem(
-        AsyncStorageKey.LAST_STORE_NAME,
-        formData.name
-      );
+      await AsyncStorage.setItem(AsyncStorageKey.LAST_STORE_NAME, name);
       setShowQR(true);
     }
   };
@@ -194,29 +179,25 @@ export default (props: HomeScreenProps) => {
   const handleOnBlurInput = async (
     _e: NativeSyntheticEvent<TextInputFocusEventData>
   ) => {
-    console.log("onblur");
-    if (formData.name) {
-      setUserExist(await HiveUtils.checkIfUserExists(formData.name));
+    if (name) {
+      setUserExist(await HiveUtils.checkIfUserExists(name));
     }
   };
 
   const handleSetMemo = (value: string) => {
-    setData({ ...formData, memo: value });
     setMemo(value);
   };
   const getQuotedAmount = () => {
-    if (currency && formData.amount && quoteCurrency) {
+    if (currency && amount && quoteCurrency) {
       if (currency === quoteCurrency) {
-        return formData.amount;
+        return amount;
       } else {
         const quote = quoteCurrencyList.find(
-          (item) => item.symbol === quoteCurrency
+          (item) => item.value === quoteCurrency
         );
-        const base = quoteCurrencyList.find((item) => item.symbol === currency);
+        const base = quoteCurrencyList.find((item) => item.value === currency);
         if (quote && base) {
-          return ((parseFloat(formData.amount) * quote.btc) / base.btc).toFixed(
-            3
-          );
+          return ((parseFloat(amount) * quote.btc) / base.btc).toFixed(3);
         } else {
           return "";
         }
@@ -225,8 +206,9 @@ export default (props: HomeScreenProps) => {
       return "";
     }
   };
-
-  const quotedAmount = getQuotedAmount();
+  useEffect(() => {
+    setQuotedAmount(getQuotedAmount());
+  }, [amount, currency, quoteCurrency]);
 
   return (
     <ScreenLayout>
@@ -241,7 +223,14 @@ export default (props: HomeScreenProps) => {
             mt="10%"
             h={"90%"}
           >
-            <View style={{ flex: 1, gap: 20, marginTop: "5%" }}>
+            <View
+              style={{
+                flex: 1,
+                gap: 20,
+                marginTop: "5%",
+                width: "100%",
+              }}
+            >
               <FormControl isRequired isInvalid={!userExist}>
                 <FormControl.Label
                   _text={{
@@ -250,8 +239,15 @@ export default (props: HomeScreenProps) => {
                 >
                   {translate("common.shop_username")}
                 </FormControl.Label>
-                <Input
-                  InputLeftElement={
+                <OperationInput
+                  autoCapitalize="none"
+                  placeholder={translate("common.shop_username")}
+                  disabled={lock}
+                  onChangeText={(value) => setName(value)}
+                  value={name}
+                  onBlur={handleOnBlurInput}
+                  readOnly={lock}
+                  leftIcon={
                     <Icon
                       as={<MaterialIcons name="person" s />}
                       tintColor={"red"}
@@ -260,7 +256,7 @@ export default (props: HomeScreenProps) => {
                       color={Colors.light.red}
                     />
                   }
-                  InputRightElement={
+                  rightIcon={
                     <Pressable onPress={() => setLock(!lock)}>
                       <Icon
                         as={
@@ -274,15 +270,6 @@ export default (props: HomeScreenProps) => {
                       />
                     </Pressable>
                   }
-                  autoCapitalize="none"
-                  placeholder={translate("common.shop_username")}
-                  isDisabled={lock}
-                  onChangeText={(value) =>
-                    setData({ ...formData, name: value })
-                  }
-                  value={formData.name}
-                  onBlur={handleOnBlurInput}
-                  isReadOnly={lock}
                 />
 
                 <FormControl.ErrorMessage
@@ -299,101 +286,61 @@ export default (props: HomeScreenProps) => {
                 >
                   {translate("common.amount")}
                 </FormControl.Label>
-                <InputGroup>
-                  <Input
-                    keyboardType="decimal-pad"
-                    _input={{
-                      selectionColor: "grey.100",
-                      cursorColor: "grey.100",
-                      backgroundColor: "grey.100",
-                      tintColor: "grey.100",
-                    }}
+                <View style={[styles.flexRowBetween]}>
+                  <OperationInput
+                    labelInput="hi"
+                    inputMode="numeric"
+                    keyboardType="numeric"
                     placeholder={translate("common.amount_placeholder")}
-                    width="50%"
-                    onChangeText={(value) =>
-                      setData({ ...formData, amount: value.replace(",", ".") })
-                    }
-                    value={formData.amount}
+                    onChangeText={(value) => setAmount(value)}
+                    value={amount}
                     returnKeyType="done"
+                    additionalOuterContainerStyle={{
+                      width: "40%",
+                    }}
                   />
-                  <Select
-                    //@ts-ignore
-                    isReadOnly
-                    selectedValue={quoteCurrency}
-                    focusable={false}
-                    placeholder="Loading..."
-                    minWidth="50%"
-                    dropdownIcon={
-                      <ChevronDownIcon
-                        size="4"
-                        mr="3"
-                        color={Colors.light.red}
-                      />
-                    }
-                    _selectedItem={{
-                      endIcon: <CheckIcon size="5" />,
+                  <DropdownModal
+                    list={quoteCurrencyList}
+                    dropdownTitle="common.currency"
+                    selected={quoteCurrency || { value: "" }}
+                    onSelected={(e) => {
+                      setQuoteCurrency(e.value);
                     }}
-                    onValueChange={(itemValue) => {
-                      AsyncStorage.setItem(
-                        AsyncStorageKey.LAST_QUOTE_CURRENCY,
-                        itemValue
-                      );
-                      setQuoteCurrency(itemValue);
-                    }}
-                    fontSize={"xs"}
-                  >
-                    {quoteCurrencyList.map((item) => (
-                      <Select.Item
-                        label={item.name}
-                        value={item.symbol}
-                        key={item.symbol}
-                      />
-                    ))}
-                  </Select>
-                </InputGroup>
+                    selectedBgColor={Colors.light.red}
+                  />
+                </View>
+
                 <View style={styles.paidWith} />
-                <InputGroup>
-                  <Input
-                    minWidth="50%"
-                    isReadOnly
-                    focusable={false}
-                    value={translate("common.paid_with")}
+              </FormControl>
+              <FormControl isRequired>
+                <FormControl.Label
+                  _text={{
+                    bold: true,
+                  }}
+                >
+                  {translate("common.paid_with")}
+                </FormControl.Label>
+                <View style={[styles.flexRowBetween]}>
+                  <OperationInput
+                    readOnly
+                    labelInput="1"
+                    value={quotedAmount ? quotedAmount : ""}
+                    additionalOuterContainerStyle={{
+                      width: "40%",
+                    }}
                   />
-                  <Select
-                    //@ts-ignore
-                    isReadOnly
-                    selectedValue={currency}
-                    focusable={false}
-                    minWidth="50%"
-                    dropdownIcon={
-                      <ChevronDownIcon
-                        size="4"
-                        mr="3"
-                        color={Colors.light.red}
-                      />
-                    }
-                    _selectedItem={{
-                      endIcon: <CheckIcon size="5" />,
+                  <DropdownModal
+                    list={[
+                      { label: "HIVE", value: "HIVE" },
+                      { label: "HBD", value: "HBD" },
+                    ]}
+                    dropdownTitle="common.currency"
+                    selected={currency || { value: "" }}
+                    onSelected={(e) => {
+                      setCurrency(e.value);
                     }}
-                    onValueChange={(itemValue) => {
-                      AsyncStorage.setItem(
-                        AsyncStorageKey.LAST_CURRENCY,
-                        itemValue
-                      );
-                      setCurrency(itemValue);
-                    }}
-                    fontSize={"xs"}
-                  >
-                    <Select.Item label="HIVE" value="HIVE" />
-                    <Select.Item label="HBD" value="HBD" />
-                  </Select>
-                </InputGroup>
-                <View style={styles.quote}>
-                  <Text alignItems="flex-end">
-                    {quotedAmount
-                      ? `= ${quotedAmount} ${currency?.toUpperCase()}`
-                      : ""}
-                  </Text>
+                    selectedBgColor={Colors.light.red}
+                  />
                 </View>
               </FormControl>
               <FormControl>
@@ -405,59 +352,46 @@ export default (props: HomeScreenProps) => {
                   {translate("common.memo")}
                 </FormControl.Label>
                 <Stack alignItems={"center"} w={"100%"}>
-                  <InputGroup
-                    w={{
-                      base: "100%",
-                    }}
-                  >
-                    <Input
-                      InputLeftElement={
-                        <HStack
-                          space={"1.5"}
-                          h={"100%"}
-                          alignItems={"center"}
-                          backgroundColor="red"
-                          mr={"0"}
-                          pr={"0"}
-                        >
-                          <Icon
-                            as={<MaterialIcons name="note" />}
-                            size={5}
-                            ml="2"
-                            color={Colors.light.red}
-                          />
-                          <Text fontSize={"sm"} mr={"-2.5"}>
-                            {completeMemoPrefix}
-                          </Text>
-                        </HStack>
-                      }
-                      placeholder={translate(
-                        "common.my_awesome_shop_placeholder"
-                      )}
-                      value={memo}
-                      onChangeText={(value) => handleSetMemo(value)}
-                      w={"100%"}
-                      fontSize={"sm"}
-                    />
-                  </InputGroup>
+                  <OperationInput
+                    autoCapitalize="none"
+                    placeholder={translate(
+                      "common.my_awesome_shop_placeholder"
+                    )}
+                    value={memo}
+                    onChangeText={(value) => handleSetMemo(value)}
+                    leftIcon={
+                      <HStack
+                        space={"1.5"}
+                        h={"100%"}
+                        alignItems={"center"}
+                        backgroundColor="red"
+                        mr={"0"}
+                        pr={"0"}
+                      >
+                        <Icon
+                          as={<MaterialIcons name="note" />}
+                          size={5}
+                          ml="2"
+                          color={Colors.light.red}
+                        />
+                        <Text fontSize={"sm"} mr={"-2.5"}>
+                          {completeMemoPrefix}
+                        </Text>
+                      </HStack>
+                    }
+                  />
                 </Stack>
               </FormControl>
               <View style={{ flex: 1 }} />
               <Button
                 onPress={() => {
-                  handlerSubmitData(formData.name, formData.amount, memo);
+                  handlerSubmitData(name, amount.replace(",", "."), memo);
                 }}
                 mt="50"
               >
                 {translate("common.submit")}
               </Button>
             </View>
-
-            {errorValidation && (
-              <VStack mt={4} alignItems={"center"}>
-                <Text>{errorValidation}</Text>
-              </VStack>
-            )}
           </VStack>
         )}
         {showQR && (
@@ -471,7 +405,7 @@ export default (props: HomeScreenProps) => {
                     " " +
                     currency!.toUpperCase(),
                   from: "",
-                  to: formData.name,
+                  to: name,
                   memo: completeMemoPrefix + memo,
                 },
               ] as TransferOperation
@@ -488,4 +422,10 @@ export default (props: HomeScreenProps) => {
 const styles = StyleSheet.create({
   quote: { width: "100%", alignItems: "flex-end" },
   paidWith: { height: 10 },
+  flexRowBetween: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    columnGap: 10,
+  },
 });

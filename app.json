@@ -8,14 +8,18 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "androidStatusBar":{"translucent":false},
+    "androidStatusBar": {
+      "translucent": false,
+      "backgroundColor": "#000"
+    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.keychainstore",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ic_launcher_foreground.png",
-        "backgroundColor": "#000",
+        "backgroundColor": "#000"
       }
     },
     "plugins": [
@@ -33,6 +37,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "4a20379e-a93a-4612-a155-9e8dd8efe056"
+      }
     }
   }
 }

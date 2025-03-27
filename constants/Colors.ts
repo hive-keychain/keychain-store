@@ -15,7 +15,12 @@ export const Colors = {
     cardBorderColorContrast: "#EAEAEA",
     red: "#E31337",
     red100: "#E3133755",
-    primaryBackground: "#E5EDF5",
+    secondaryText: "#212838",
+    cardBorderColor: "#E1E8EF",
+    secondaryCardBgColor: "#B4C0CF",
+    cardBgColor: "#FFF",
+    lineSeparatorStroke: "#EDF4FC",
+    disabledInput: "#F9F9F9",
   },
   dark: {
     text: "#ECEDEE",
