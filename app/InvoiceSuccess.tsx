@@ -1,19 +1,12 @@
 import ScreenLayout from "@/components/ScreenLayout";
+import { Colors } from "@/constants/Colors";
 import { translate } from "@/utils/Localization.utils";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import moment from "moment";
-import {
-  ArrowForwardIcon,
-  CheckCircleIcon,
-  HStack,
-  Heading,
-  Icon,
-  Link,
-  Text,
-  VStack,
-} from "native-base";
+import { Button, HStack, Heading, Text, VStack } from "native-base";
 import React from "react";
+import { StyleSheet } from "react-native";
+import Success from "../assets/images/success.svg";
 
 type Props = {};
 
@@ -25,75 +18,99 @@ export default ({}: Props) => {
   const router = useRouter();
   return (
     <ScreenLayout>
-      <VStack
-        width="100%"
-        mx={"30"}
-        padding={8}
-        alignSelf={"center"}
-        height="80%"
-        mt="10%"
-        h={"90%"}
-      >
+      <VStack width="100%" mx={"30"} padding={8} alignSelf={"center"}>
         {" "}
-        <HStack
-          space={"1"}
+        <VStack
+          space={"5"}
           alignItems={"center"}
           justifyContent={"center"}
           marginBottom={10}
         >
-          <CheckCircleIcon size="5" mt="0.5" color="emerald.500" />
+          <Success />
           <Heading>{translate("common.payment_success")}</Heading>
-        </HStack>
+        </VStack>
         {params && params.confirmedOperation && (
           <>
-            <HStack justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}>{translate("common.confirmed")}:</Text>
-              <Text>{moment.unix(Number(updatedAt)).format("lll")}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text fontWeight={"bold"} fontSize={"md"}>
+                {translate("common.created")}:
+              </Text>
+              <Text fontSize={"md"}>
+                {moment.unix(Number(createdAt)).format("lll")}
+              </Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text bold>{translate("common.from")}:</Text>
-              <Text>@{from}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text bold fontSize={"md"}>
+                {translate("common.confirmed")}:
+              </Text>
+              <Text fontSize={"md"}>
+                {moment.unix(Number(updatedAt)).format("lll")}
+              </Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text bold>{translate("common.to")}:</Text>
-              <Text>@{to}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text bold fontSize={"md"}>
+                {translate("common.from")}:
+              </Text>
+              <Text fontSize={"md"}>@{from}</Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text bold>{translate("common.amount")}:</Text>
-              <Text>{amount}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text bold fontSize={"md"}>
+                {translate("common.to")}:
+              </Text>
+              <Text fontSize={"md"}>@{to}</Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text bold>{translate("common.memo")}:</Text>
-              <Text textAlign={"center"}>{memo}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text bold fontSize={"md"}>
+                {translate("common.amount")}:
+              </Text>
+              <Text fontSize={"md"}>{amount}</Text>
             </HStack>
-            <HStack justifyContent={"space-between"}>
-              <Text fontWeight={"bold"}>{translate("common.created")}:</Text>
-              <Text>{moment.unix(Number(createdAt)).format("lll")}</Text>
+            <HStack justifyContent={"space-between"} style={styles.info}>
+              <Text bold fontSize={"md"}>
+                {translate("common.memo")}:
+              </Text>
+              <Text textAlign={"center"} fontSize={"md"}>
+                {memo}
+              </Text>
             </HStack>
           </>
         )}
         <HStack
           justifyContent={"space-between"}
           marginTop={20}
+          style={{ columnGap: 10 }}
           alignContent={"center"}
         >
-          <Link
-            onPress={() => router.navigate({ pathname: "/HistoryInvoices" })}
+          <Button
+            onPress={() => {
+              router.navigate({ pathname: "/HistoryInvoices" });
+            }}
+            style={{ flex: 1 }}
+            _text={{ color: Colors.light.text }}
+            color={Colors.light.text}
+            backgroundColor={Colors.light.textInverse}
           >
-            <Icon
-              as={<MaterialIcons name="list" />}
-              size={5}
-              mr="0.5"
-              color="muted.400"
-            />
             {translate("navigation.check_in_history")}
-          </Link>
-          <Link onPress={() => router.navigate({ pathname: "/Home" })}>
-            <ArrowForwardIcon size="5" mt="0.5" mr="0.5" color="emerald.500" />
+          </Button>
+          <Button
+            onPress={() => {
+              router.navigate({ pathname: "/Home" });
+            }}
+            style={{ flex: 1 }}
+          >
             {translate("navigation.next_invoice")}
-          </Link>
+          </Button>
         </HStack>
       </VStack>
     </ScreenLayout>
   );
 };
+
+const styles = StyleSheet.create({
+  info: {
+    marginBottom: 8,
+    borderBottomColor: Colors.light.secondaryCardBgColor,
+    borderBottomWidth: 1,
+    paddingBottom: 8,
+  },
+});

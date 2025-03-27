@@ -34,7 +34,7 @@ export default function RootLayout() {
           backgroundColor: Colors.light.red,
           borderRadius: 20,
           _text: {
-            color: Colors.light.textInverse,
+            color: "white",
             fontSize: "sm",
           },
         },

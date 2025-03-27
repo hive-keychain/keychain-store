@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   bold: { fontWeight: "bold" },
   info: {
     marginBottom: 10,
-    borderBottomColor: Colors.light.text,
+    borderBottomColor: Colors.light.secondaryCardBgColor,
     borderBottomWidth: 1,
     paddingBottom: 10,
   },
