@@ -11,8 +11,8 @@ import * as Sharing from "expo-sharing";
 import { encodeOp, encodeOps } from "hive-uri";
 import moment from "moment";
 import { Button, Heading, HStack, Icon, Link, Text, VStack } from "native-base";
-import React from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import React, { useEffect } from "react";
+import { BackHandler, Platform, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import AlertBox from "./AlertBox";
@@ -43,6 +43,19 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
   const [error, setError] = React.useState<any>(null);
   const [encodedOp, setEncodedOp] = React.useState<any>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        setShowAlertBox(true);
+        return true;
+      }
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const init = React.useCallback(() => {
     let value;
     if (ops) {
