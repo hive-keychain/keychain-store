@@ -56,12 +56,12 @@ export default function RootLayout() {
               drawerInactiveTintColor: Colors.light.text,
               drawerItemStyle: styles.drawerItemStyle,
             }}
-            initialRouteName="Home"
+            initialRouteName="(invoices)"
             drawerContent={(props) => <DrawerContent {...props} />}
           >
             <Drawer.Screen name="index" redirect />
             <Drawer.Screen
-              name="Home"
+              name="(invoices)"
               options={{
                 title: translate("common.new_invoice"),
                 popToTopOnBlur: true,
@@ -72,13 +72,6 @@ export default function RootLayout() {
               options={{
                 title: translate("navigation.historyTitle"),
                 popToTopOnBlur: true,
-              }}
-            />
-            <Drawer.Screen
-              name="InvoiceSuccess"
-              options={{
-                title: translate("navigation.invoiceSuccessTitle"),
-                drawerItemStyle: { display: "none" },
               }}
             />
           </Drawer>

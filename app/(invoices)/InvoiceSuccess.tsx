@@ -1,17 +1,19 @@
 import ScreenLayout from "@/components/ScreenLayout";
 import { Colors } from "@/constants/Colors";
 import { translate } from "@/utils/Localization.utils";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import moment from "moment";
 import { Button, HStack, Heading, Text, VStack } from "native-base";
 import React from "react";
 import { StyleSheet } from "react-native";
-import Success from "../assets/images/success.svg";
+import Success from "../../assets/images/success.svg";
 
 type Props = {};
 
 export default ({}: Props) => {
   const params = useLocalSearchParams();
+  const navigation = useNavigation();
+
   const { createdAt, updatedAt, from, to, amount, memo } = JSON.parse(
     params.confirmedOperation as string
   );
@@ -83,6 +85,11 @@ export default ({}: Props) => {
         >
           <Button
             onPress={() => {
+              router.dismissAll();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
               router.navigate({ pathname: "/HistoryInvoices" });
             }}
             style={{ flex: 1 }}
@@ -94,6 +101,11 @@ export default ({}: Props) => {
           </Button>
           <Button
             onPress={() => {
+              router.dismissAll();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
               router.navigate({ pathname: "/Home" });
             }}
             style={{ flex: 1 }}

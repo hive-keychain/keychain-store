@@ -1,27 +1,21 @@
 import HistoryInvoicesItem from "@/components/HistoryInvoicesItem";
-import Loader from "@/components/Loader";
+import OperationInput from "@/components/OperationInput";
 import ScreenLayout from "@/components/ScreenLayout";
+import Separator from "@/components/Separator";
+import { Colors } from "@/constants/Colors";
 import { translate } from "@/utils/Localization.utils";
 import { AsyncStorageUtils, InvoiceData } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import {
-  ArrowUpIcon,
-  Box,
-  Center,
-  FormControl,
-  HStack,
-  Icon,
-  Input,
-  Link,
-  Text,
-} from "native-base";
+import { ArrowUpIcon, Center, HStack, Link, Text } from "native-base";
 import React, { useRef } from "react";
 import {
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { MainDrawerParamList } from "./_layout";
 
@@ -82,11 +76,7 @@ export default ({ navigation }: Props) => {
     }
   };
 
-  return loading ? (
-    <ScreenLayout>
-      <Loader />
-    </ScreenLayout>
-  ) : (
+  return (
     <ScreenLayout>
       {invoiceHistoryList.length === 0 ? (
         <Center h={"100%"}>
@@ -99,44 +89,31 @@ export default ({ navigation }: Props) => {
           </Link>
         </Center>
       ) : (
-        <>
-          <FormControl width={"90%"} mt={5}>
-            <FormControl.Label
-              _text={{
-                bold: true,
-              }}
-            >
-              {translate("common.filter")}{" "}
-            </FormControl.Label>
-            <Input
-              InputLeftElement={
-                <Icon
-                  as={<MaterialIcons name="search" />}
-                  size={5}
-                  ml="2"
-                  color="muted.400"
-                />
-              }
-              InputRightElement={
-                <Icon
-                  as={<MaterialIcons name="clear" />}
-                  size={5}
-                  mr="2"
-                  color="muted.400"
-                  onPress={() => {
-                    setSearchQuery("");
-                  }}
-                />
-              }
-              placeholder={translate("common.search_box_placeholder")}
-              value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
-            />
-          </FormControl>
+        <View style={styles.container}>
+          <OperationInput
+            leftIcon={
+              <MaterialIcons name="search" size={20} color={Colors.light.red} />
+            }
+            rightIcon={
+              <MaterialIcons
+                name="clear"
+                size={15}
+                onPress={() => {
+                  setSearchQuery("");
+                }}
+              />
+            }
+            placeholder={translate("common.search_box_placeholder")}
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
+          />
+
           <FlatList
             style={styles.flatList}
             ref={flatListRef}
             data={filteredInvoiceHistoryList}
+            refreshing={loading}
+            onRefresh={() => setReload(!reload)}
             renderItem={(data) => (
               <HistoryInvoicesItem
                 key={data.item.memo}
@@ -144,21 +121,35 @@ export default ({ navigation }: Props) => {
                 reloadParent={() => setReload(!reload)}
               />
             )}
-            onScrollEndDrag={handleDragScroll}
+            onMomentumScrollEnd={handleDragScroll}
+            ListFooterComponent={<Separator height={100} />}
           />
           {showScrollToTop && (
-            <Box position={"absolute"} bottom={"3"} right={"2"}>
-              <ArrowUpIcon
-                size={"5"}
-                background={"white"}
-                onPress={gotoStartScroll}
-              />
-            </Box>
+            <TouchableOpacity
+              style={styles.backToTop}
+              onPress={gotoStartScroll}
+            >
+              <ArrowUpIcon size={"5"} color={"white"} />
+            </TouchableOpacity>
           )}
-        </>
+        </View>
       )}
     </ScreenLayout>
   );
 };
 
-const styles = StyleSheet.create({ flatList: { marginTop: 10, width: "90%" } });
+const styles = StyleSheet.create({
+  flatList: { marginTop: 30, width: "100%" },
+  backToTop: {
+    justifyContent: "center",
+    borderRadius: 100,
+    alignItems: "center",
+    position: "absolute",
+    bottom: 50,
+    right: 10,
+    width: 45,
+    height: 45,
+    backgroundColor: Colors.light.red,
+  },
+  container: { paddingHorizontal: "5%", marginTop: 30 },
+});

@@ -1,4 +1,4 @@
-import { HomeScreenProps } from "@/app/Home";
+import { HomeScreenProps } from "@/app/(invoices)/Home";
 import logo from "@/assets/images/ic_launcher.png";
 import { Colors } from "@/constants/Colors";
 import { HiveUtils } from "@/utils/Hive.utils";

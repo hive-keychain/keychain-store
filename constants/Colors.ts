@@ -21,6 +21,7 @@ export const Colors = {
     cardBgColor: "#FFF",
     lineSeparatorStroke: "#EDF4FC",
     disabledInput: "#F9F9F9",
+    green: "#2aa034",
   },
   dark: {
     text: "#ECEDEE",

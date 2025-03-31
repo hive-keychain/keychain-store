@@ -45,7 +45,6 @@ const DropdownModal = ({
       setTimeout(() => onSelected(item), 100);
     }, 300);
   };
-  console.log(selected);
 
   const renderDropdownItem = (item: DropdownModalItem, index: number) => {
     const showSelectedBgOnItem =
