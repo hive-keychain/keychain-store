@@ -7,12 +7,11 @@ import { AsyncStorageUtils } from "@/utils/Storage.utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Operation, TransferOperation } from "@hiveio/dhive";
 import { useRouter } from "expo-router";
-import * as Sharing from "expo-sharing";
 import { encodeOp, encodeOps } from "hive-uri";
 import moment from "moment";
 import { Button, Heading, HStack, Icon, Link, Text, VStack } from "native-base";
 import React, { useEffect } from "react";
-import { BackHandler, Platform, StyleSheet, View } from "react-native";
+import { BackHandler, Share, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import AlertBox from "./AlertBox";
@@ -161,40 +160,13 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
                 "https://hive-keychain.com/#invoice/"
               );
               const title = "Keychain Store Invoice";
-              const icon = "data:image/png;base64,"; // TODO: fix : + qrCodeBase64;
-              const options = Platform.select({
-                ios: {
-                  activityItemSources: [
-                    {
-                      // For using custom icon instead of default text icon at share preview when sharing with message.
-                      placeholderItem: {
-                        type: "url",
-                        content: icon,
-                      },
-                      item: {
-                        default: {
-                          type: "text",
-                          content: `${message} 
-                          
-${url}`,
-                        },
-                      },
-                      linkMetadata: {
-                        title: message,
-                        icon: icon,
-                      },
-                    },
-                  ],
-                },
-                default: {
-                  title,
-                  subject: title,
-                  message,
-                  url,
-                },
-              });
-              //TODO: Fix this
-              Sharing.shareAsync(url, {});
+              const options = {
+                title,
+                subject: title,
+                message: `${title}\n\n${message}\n\n${url}`,
+              };
+
+              Share.share(options);
             }}
             style={styles.touchable}
           >

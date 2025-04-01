@@ -370,7 +370,7 @@ export default (props: HomeScreenProps) => {
                       alignItems={"center"}
                       backgroundColor="red"
                       mr={"0"}
-                      pr={"0"}
+                      pr={"1"}
                     >
                       <Icon
                         as={<MaterialIcons name="note" />}

@@ -53,6 +53,7 @@ export default function RootLayout() {
               drawerStyle: styles.drawer,
               drawerActiveBackgroundColor: Colors.light.red,
               drawerActiveTintColor: Colors.light.textInverse,
+              headerTintColor: "black",
               drawerInactiveTintColor: Colors.light.text,
               drawerItemStyle: styles.drawerItemStyle,
             }}

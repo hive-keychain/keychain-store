@@ -21,7 +21,6 @@ export default ({}: Props) => {
   return (
     <ScreenLayout>
       <VStack width="100%" mx={"30"} padding={8} alignSelf={"center"}>
-        {" "}
         <VStack
           space={"5"}
           alignItems={"center"}
