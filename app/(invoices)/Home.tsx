@@ -1,6 +1,5 @@
 import DropdownModal from "@/components/DropdownModal";
 import OperationInput from "@/components/OperationInput";
-import ScreenLayout from "@/components/ScreenLayout";
 import { Colors } from "@/constants/Colors";
 import { memoPrefix } from "@/constants/Prefix";
 import { HiveUtils } from "@/utils/Hive.utils";
@@ -13,6 +12,7 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import { router, SplashScreen, useLocalSearchParams } from "expo-router";
 import SimpleToast from "react-native-simple-toast";
 
+import ScreenLayout from "@/components/ScreenLayout";
 import {
   Button,
   FormControl,
@@ -21,16 +21,18 @@ import {
   Pressable,
   Stack,
   Text,
-  VStack,
   WarningOutlineIcon,
 } from "native-base";
 import React, { useEffect } from "react";
 import {
+  KeyboardAvoidingView,
   NativeSyntheticEvent,
+  Platform,
   StyleSheet,
   TextInputFocusEventData,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MainDrawerParamList } from "../_layout";
 
 export type HomeScreenProps = DrawerScreenProps<MainDrawerParamList, "Home">;
@@ -52,7 +54,8 @@ export default (props: HomeScreenProps) => {
   const [userExist, setUserExist] = React.useState(true);
   const [completeMemoPrefix, setMemoPrefix] = React.useState("");
   const [quotedAmount, setQuotedAmount] = React.useState("");
-
+  const insets = useSafeAreaInsets();
+  console.log("inset", insets);
   const local = useLocalSearchParams();
   const handleResetForm = () => {
     handleSetMemo("");
@@ -219,24 +222,24 @@ export default (props: HomeScreenProps) => {
 
   return (
     <ScreenLayout>
-      <VStack width="100%">
-        <VStack
-          width="100%"
-          mx={"30"}
-          padding={8}
-          alignSelf={"center"}
-          height="80%"
-          mt="10%"
-          h={"90%"}
+      <View
+        style={{
+          width: "100%",
+          padding: 8,
+          paddingHorizontal: 20,
+          flexGrow: 1,
+          justifyContent: "space-around",
+        }}
+      >
+        <KeyboardAvoidingView
+          enabled={Platform.OS === "ios" ? true : false}
+          behavior={"padding"}
+          keyboardVerticalOffset={insets.bottom}
+          style={{
+            gap: 20,
+          }}
         >
-          <View
-            style={{
-              flex: 1,
-              gap: 20,
-              marginTop: "5%",
-              width: "100%",
-            }}
-          >
+          <View style={{ gap: 20 }}>
             <FormControl isRequired isInvalid={!userExist}>
               <FormControl.Label
                 _text={{
@@ -295,7 +298,7 @@ export default (props: HomeScreenProps) => {
               <View style={[styles.flexRowBetween]}>
                 <OperationInput
                   labelInput="hi"
-                  inputMode="numeric"
+                  inputMode="decimal"
                   keyboardType="numeric"
                   placeholder={translate("common.amount_placeholder")}
                   onChangeText={(value) => setAmount(value)}
@@ -386,18 +389,17 @@ export default (props: HomeScreenProps) => {
                 />
               </Stack>
             </FormControl>
-            <View style={{ flex: 1 }} />
-            <Button
-              onPress={() => {
-                handlerSubmitData(name, amount.replace(",", "."), memo);
-              }}
-              mt="50"
-            >
-              {translate("common.submit")}
-            </Button>
           </View>
-        </VStack>
-      </VStack>
+          <Button
+            onPress={() => {
+              handlerSubmitData(name, amount.replace(",", "."), memo);
+            }}
+            mt="50"
+          >
+            {translate("common.submit")}
+          </Button>
+        </KeyboardAvoidingView>
+      </View>
     </ScreenLayout>
   );
 };

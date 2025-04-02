@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import moment from "moment";
 import { Box, Button, HStack, Link, Text, VStack } from "native-base";
 import React from "react";
+import { TouchableOpacity } from "react-native";
 import Check from "../assets/images/check.svg";
 import Pending from "../assets/images/pending.svg";
 import Avatar from "./Avatar";
@@ -49,21 +50,22 @@ export default ({ item, reloadParent }: Props) => {
       pb={4}
       pt={2}
     >
-      <HStack justifyContent={"space-between"}>
-        <Text>{moment.unix(Number(item.createdAt)).format("L")}</Text>
-        <Text>{item.amount}</Text>
-        {item.confirmed ? (
-          <Check width={24} height={24} fill={Colors.light.green} />
-        ) : (
-          <Pending width={24} height={24} fill={Colors.light.red} />
-        )}
-        <MaterialIcons
-          name={isExpanded ? "expand-less" : "expand-more"}
-          color={Colors.light.red}
-          size={24}
-          onPress={() => setIsExpanded(!isExpanded)}
-        />
-      </HStack>
+      <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+        <HStack justifyContent={"space-between"}>
+          <Text>{moment.unix(Number(item.createdAt)).format("L")}</Text>
+          <Text>{item.amount}</Text>
+          {item.confirmed ? (
+            <Check width={24} height={24} fill={Colors.light.green} />
+          ) : (
+            <Pending width={24} height={24} fill={Colors.light.red} />
+          )}
+          <MaterialIcons
+            name={isExpanded ? "expand-less" : "expand-more"}
+            color={Colors.light.red}
+            size={24}
+          />
+        </HStack>
+      </TouchableOpacity>
       {isExpanded && (
         <Box w={"100%"} pt={2}>
           {item.confirmed && item.from && (

@@ -3,8 +3,6 @@ import React from "react";
 import {
   ImageBackground,
   ImageStyle,
-  KeyboardAvoidingView,
-  Platform,
   ScaledSize,
   StyleProp,
   StyleSheet,
@@ -28,21 +26,15 @@ export default (props: BackgroundProps) => {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.mainContainer]}>
-      <KeyboardAvoidingView
-        style={[styles.container, props.containerStyle]}
-        enabled={Platform.OS === "ios" ? true : false}
-        behavior={"padding"}
+      <ImageBackground
+        source={hexagonsLight}
+        resizeMethod="scale"
+        resizeMode="stretch"
+        style={[styles.container]}
+        imageStyle={[styles.bgSvgStyle, props.additionalBgSvgImageStyle]}
       >
-        <ImageBackground
-          source={hexagonsLight}
-          resizeMethod="scale"
-          resizeMode="stretch"
-          style={[styles.container]}
-          imageStyle={[styles.bgSvgStyle, props.additionalBgSvgImageStyle]}
-        >
-          {props.children}
-        </ImageBackground>
-      </KeyboardAvoidingView>
+        {props.children}
+      </ImageBackground>
     </View>
   );
 };
@@ -51,7 +43,7 @@ const getStyles = ({ width, height }: ScaledSize) =>
   StyleSheet.create({
     mainContainer: {
       flex: 1,
-      backgroundColor: Colors.light.primaryBackground,
+      backgroundColor: Colors.light.background,
     },
     container: {
       flex: 1,
