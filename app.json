@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.keychainstore"
     },
     "android": {
-      "package": "com.keychainstore",
+      "package": "com.keychainstore",      "softwareKeyboardLayoutMode": "pan",
+
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ic_launcher_foreground.png",
         "backgroundColor": "#000"
