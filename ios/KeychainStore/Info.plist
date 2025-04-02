@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.keychainstore</string>
+          <string>org.reactjs.native.example.keychainStore</string>
         </array>
       </dict>
     </array>
