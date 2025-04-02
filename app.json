@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.reactjs.native.example.keychainStore"
+      "bundleIdentifier": "org.reactjs.native.example.keychainStore",
+      "infoPlist": {"NSCameraUsageDescription": "Allow Keychain Store to access your camera."}
     },
     "android": {
       "package": "com.keychainstore",      
