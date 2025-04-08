@@ -2,7 +2,7 @@
   "expo": {
     "name": "Keychain Store",
     "slug": "keychain-store",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/ic_launcher.png",
     "scheme": "myapp",
@@ -13,8 +13,8 @@
       "backgroundColor": "#000"
     },
     "ios": {
-      "supportsTablet": true,
       "bundleIdentifier": "org.reactjs.native.example.keychainStore",
+      
       "infoPlist": {"NSCameraUsageDescription": "Allow Keychain Store to access your camera."}
     },
     "android": {

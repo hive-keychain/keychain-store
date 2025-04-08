@@ -55,7 +55,6 @@ export default (props: HomeScreenProps) => {
   const [completeMemoPrefix, setMemoPrefix] = React.useState("");
   const [quotedAmount, setQuotedAmount] = React.useState("");
   const insets = useSafeAreaInsets();
-  console.log("inset", insets);
   const local = useLocalSearchParams();
   const handleResetForm = () => {
     handleSetMemo("");
@@ -298,7 +297,7 @@ export default (props: HomeScreenProps) => {
               <View style={[styles.flexRowBetween]}>
                 <OperationInput
                   labelInput="hi"
-                  inputMode="decimal"
+                  inputMode={Platform.OS === "ios" ? "decimal" : "numeric"}
                   keyboardType="numeric"
                   placeholder={translate("common.amount_placeholder")}
                   onChangeText={(value) => setAmount(value)}
