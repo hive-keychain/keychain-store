@@ -139,9 +139,9 @@ const HiveQRCode = ({ ops, op, goBack, ...props }: Props) => {
   };
 
   return (
-    <VStack width={"100%"} padding={5} alignSelf={"center"}>
+    <VStack width={"100%"} h={"100%"} padding={5} justifyContent={"center"}>
       {encodedOp && !confirmed && operation && (
-        <VStack space={1} alignItems={"center"}>
+        <VStack space={1} alignItems={"center"} justifyContent={"center"}>
           <Heading fontSize="xl" mb={30}>
             {translate("common.scan_qr_code")}
           </Heading>

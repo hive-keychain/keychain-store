@@ -20,7 +20,13 @@ export default ({}: Props) => {
   const router = useRouter();
   return (
     <ScreenLayout>
-      <VStack width="100%" mx={"30"} padding={8} alignSelf={"center"}>
+      <VStack
+        width="100%"
+        padding={8}
+        h="100%"
+        alignSelf={"center"}
+        justifyContent={"center"}
+      >
         <VStack
           space={"5"}
           alignItems={"center"}
