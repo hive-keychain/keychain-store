@@ -2,11 +2,11 @@
   "expo": {
     "name": "Keychain Store",
     "slug": "keychain-store",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/ic_launcher.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "androidStatusBar": {
       "translucent": false,
