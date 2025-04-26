@@ -198,15 +198,16 @@ export default (props: HomeScreenProps) => {
   };
   const getQuotedAmount = () => {
     if (currency && amount && quoteCurrency) {
+      let parsedAmount = amount.replace(",", ".");
       if (currency === quoteCurrency) {
-        return amount;
+        return parsedAmount;
       } else {
         const quote = quoteCurrencyList.find(
           (item) => item.value === quoteCurrency
         );
         const base = quoteCurrencyList.find((item) => item.value === currency);
         if (quote && base) {
-          return ((parseFloat(amount) * quote.btc) / base.btc).toFixed(3);
+          return ((parseFloat(parsedAmount) * quote.btc) / base.btc).toFixed(3);
         } else {
           return "";
         }
