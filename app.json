@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "androidStatusBar": {
       "translucent": false,
-      "backgroundColor": "#000"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "bundleIdentifier": "org.reactjs.native.example.keychainStore",
@@ -22,7 +22,7 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ic_launcher_foreground.png",
-        "backgroundColor": "#000"
+        "backgroundColor": "#000000"
       }
     },
     "plugins": [

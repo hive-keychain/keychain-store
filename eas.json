@@ -15,7 +15,17 @@
       "autoIncrement": true
     }
   },
-  "submit": {
-    "production": {}
+ "submit": {
+    "internal": {
+      "android": {
+        "serviceAccountKeyPath": "./gplay-account.json",
+        "track": "internal"
+      },
+      "ios": {
+        "ascAppId": "6463614439",
+        "appleTeamId": "357S8L8T5N",
+        "appleId": "quentin.correa@gmail.com"
+      }
+    }
   }
 }

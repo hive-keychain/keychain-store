@@ -37,3 +37,5 @@ yarn-error.*
 
 app-example
 credentials.json
+gplay-account.json
+.env
